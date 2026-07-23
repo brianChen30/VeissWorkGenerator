@@ -1,0 +1,10 @@
+.dashboard-container {
+  display: flex;
+  background-color: #0c0d12;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+  padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
+}

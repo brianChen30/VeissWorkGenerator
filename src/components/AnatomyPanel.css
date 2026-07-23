@@ -1,0 +1,108 @@
+/* src/components/AnatomyPanel.css */
+.anatomy-panel {
+  flex: 1.2;
+  background-color: #14151f;
+  padding: 24px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #1e2235;
+}
+
+.panel-header {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #8b92a5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.anatomy-container {
+  background-color: #0c0d12;
+  border: 1px solid #1c1f30;
+  border-radius: 12px;
+  padding: 30px 10px;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.anatomy-svg {
+  width: 100%;
+  max-height: 320px;
+}
+
+/* Base structural meshes (head, neck, etc.) that aren't selectable groups */
+.anatomy-base-mesh {
+  fill: #1a1d2c;
+}
+
+/* Default unselected state for muscle paths */
+.muscle-path {
+  fill: #222538; /* Matches the dark gray/blue aesthetic from your photo */
+  stroke: #0c0d12; /* Clean black line breaks separating muscles */
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition:
+    fill 0.2s ease,
+    filter 0.2s ease;
+}
+
+/* Hovering effect */
+.muscle-path:hover {
+  fill: #3b3f5c;
+}
+
+/* 🔥 The UI selection style matching your second screenshot exactly! */
+.muscle-path.active-glow {
+  fill: #8b5cf6; /* Vibrant bright purple */
+  filter: drop-shadow(
+    0px 0px 6px rgba(139, 92, 246, 0.7)
+  ); /* Cyberpunk neon illumination glow */
+}
+
+.interaction-badge {
+  color: #4b526d;
+  font-size: 11px;
+  margin-top: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.muscle-info-card {
+  background-color: #11131e;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #1c1f30;
+}
+
+.primary-label {
+  color: #8b5cf6;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+  font-size: 13px;
+}
+
+.muscle-title-text {
+  color: #fff;
+  margin: 0 0 14px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.secondary-label {
+  color: #6c7387;
+  font-size: 12px;
+  margin: 0 0 4px 0;
+}
+
+.muscle-secondary-text {
+  color: #d1d5db;
+  margin: 0;
+  font-size: 14px;
+}

@@ -1,0 +1,323 @@
+// src/workoutDatabase.js
+
+export const exercisePool = {
+  Chest: [
+    {
+      name: "Barbell Bench Press",
+      baseSets: 4,
+      reps: "8-10",
+      velocity: "1.0 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Incline Dumbbell Press",
+      baseSets: 3,
+      reps: "10-12",
+      velocity: "1.0 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Dumbbell Flys",
+      baseSets: 3,
+      reps: "12",
+      velocity: "0.8 m/s",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Push Ups",
+      baseSets: 3,
+      reps: "AMRAP",
+      velocity: "Bodyweight",
+      timePerSet: 2,
+    },
+    {
+      name: "Cable Crossover",
+      baseSets: 3,
+      reps: "15",
+      velocity: "0.8 m/s",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Chest Dips",
+      baseSets: 3,
+      reps: "10",
+      velocity: "Bodyweight",
+      timePerSet: 2.5,
+    },
+  ],
+  Back: [
+    {
+      name: "Pull-Ups",
+      baseSets: 4,
+      reps: "8",
+      velocity: "Bodyweight",
+      timePerSet: 3,
+    },
+    {
+      name: "Barbell Rows",
+      baseSets: 3,
+      reps: "10",
+      velocity: "0.9 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Lat Pulldowns",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.1 m/s",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Seated Cable Rows",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.0 m/s",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Hyperextensions",
+      baseSets: 3,
+      reps: "15",
+      velocity: "Bodyweight",
+      timePerSet: 2,
+    },
+  ],
+  Shoulders: [
+    {
+      name: "Overhead Barbell Press",
+      baseSets: 4,
+      reps: "8",
+      velocity: "0.9 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Dumbbell Lateral Raises",
+      baseSets: 4,
+      reps: "12-15",
+      velocity: "1.2 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Face Pulls",
+      baseSets: 3,
+      reps: "15",
+      velocity: "1.0 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Front Dumbbell Raises",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.1 m/s",
+      timePerSet: 2,
+    },
+  ],
+  Arms: [
+    {
+      name: "Barbell Bicep Curls",
+      baseSets: 3,
+      reps: "10",
+      velocity: "1.0 m/s",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Tricep Rope Pushdowns",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.2 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Dumbbell Hammer Curls",
+      baseSets: 3,
+      reps: "10",
+      velocity: "1.0 m/s",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Skull Crushers",
+      baseSets: 3,
+      reps: "12",
+      velocity: "0.9 m/s",
+      timePerSet: 2.5,
+    },
+  ],
+  Forearms: [
+    {
+      name: "Behind-the-Back Wrist Curls",
+      baseSets: 3,
+      reps: "15",
+      velocity: "1.0 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Reverse Barbell Curls",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.1 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Farmer's Walks",
+      baseSets: 3,
+      reps: "45 sec",
+      velocity: "Walking",
+      timePerSet: 2.5,
+    },
+  ],
+  Core: [
+    {
+      name: "Hanging Knee Raises",
+      baseSets: 3,
+      reps: "15",
+      velocity: "Bodyweight",
+      timePerSet: 2,
+    },
+    {
+      name: "Ab Wheel Rollouts",
+      baseSets: 3,
+      reps: "10",
+      velocity: "Bodyweight",
+      timePerSet: 2.5,
+    },
+    {
+      name: "Plank",
+      baseSets: 3,
+      reps: "60 sec",
+      velocity: "Static",
+      timePerSet: 2,
+    },
+    {
+      name: "Russian Twists",
+      baseSets: 3,
+      reps: "20",
+      velocity: "Bodyweight",
+      timePerSet: 1.5,
+    },
+  ],
+  Glutes: [
+    {
+      name: "Barbell Hip Thrusts",
+      baseSets: 4,
+      reps: "10",
+      velocity: "0.8 m/s",
+      timePerSet: 3.5,
+    },
+    {
+      name: "Bulgarian Split Squats",
+      baseSets: 3,
+      reps: "8 (per leg)",
+      velocity: "0.9 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Cable Kickbacks",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.1 m/s",
+      timePerSet: 2,
+    },
+  ],
+  Quadriceps: [
+    {
+      name: "Barbell Squats",
+      baseSets: 4,
+      reps: "6-8",
+      velocity: "0.8 m/s",
+      timePerSet: 4,
+    },
+    {
+      name: "Leg Press",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.0 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Leg Extensions",
+      baseSets: 3,
+      reps: "15",
+      velocity: "1.2 m/s",
+      timePerSet: 2,
+    },
+  ],
+  Hamstrings: [
+    {
+      name: "Romanian Deadlifts",
+      baseSets: 4,
+      reps: "10",
+      velocity: "0.9 m/s",
+      timePerSet: 3,
+    },
+    {
+      name: "Lying Leg Curls",
+      baseSets: 3,
+      reps: "12",
+      velocity: "1.0 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Glute-Ham Raises",
+      baseSets: 3,
+      reps: "8",
+      velocity: "Bodyweight",
+      timePerSet: 3,
+    },
+  ],
+  Calves: [
+    {
+      name: "Standing Calf Raises",
+      baseSets: 4,
+      reps: "15",
+      velocity: "1.0 m/s",
+      timePerSet: 2,
+    },
+    {
+      name: "Seated Calf Raises",
+      baseSets: 3,
+      reps: "12",
+      velocity: "0.9 m/s",
+      timePerSet: 2,
+    },
+  ],
+};
+
+export const muscleInfo = {
+  Chest: {
+    primary: "Pectoralis Major (Chest)",
+    secondary: "Anterior Deltoids, Triceps",
+  },
+  Back: {
+    primary: "Latissimus Dorsi (Back)",
+    secondary: "Rhomboids, Biceps, Trapezius",
+  },
+  Shoulders: {
+    primary: "Deltoids (Anterior, Lateral, Posterior)",
+    secondary: "Triceps, Upper Traps",
+  },
+  Arms: {
+    primary: "Biceps Brachii & Triceps Brachii",
+    secondary: "Brachialis, Forearms",
+  },
+  Forearms: {
+    primary: "Wrist Flexors & Extensors",
+    secondary: "Brachioradialis, Grip Strength",
+  },
+  Core: {
+    primary: "Rectus Abdominis & Obliques",
+    secondary: "Transversus Abdominis, Lower Back",
+  },
+  Glutes: {
+    primary: "Gluteus Maximus & Medius",
+    secondary: "Hamstrings, Core",
+  },
+  Quadriceps: {
+    primary: "Quadriceps (Front Thighs)",
+    secondary: "Glutes, Calves",
+  },
+  Hamstrings: {
+    primary: "Biceps Femoris (Back Thighs)",
+    secondary: "Glutes, Gastrocnemius",
+  },
+  Calves: { primary: "Gastrocnemius & Soleus", secondary: "Achilles Tendon" },
+};
