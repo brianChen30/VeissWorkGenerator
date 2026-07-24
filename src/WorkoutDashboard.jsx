@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import AnatomyPanel from "./components/AnatomyPanel";
 import WorkoutPanel from "./components/WorkoutPanel";
-import { generateSmartWorkout } from "./utils/workoutGenerator";
+import {
+  generateSmartWorkout,
+  calculateExerciseTime,
+} from "./utils/workoutGenerator"; // 🔗 Imported math function
 import "./WorkoutDashboard.css";
 
 export default function WorkoutDashboard() {
@@ -30,38 +33,40 @@ export default function WorkoutDashboard() {
     handleMuscleChange(selectedMuscle, newTimeMinutes);
   };
 
-  // ⚡ LIVE EXERCISE PARAMETER TWEAKER SWITCH ENGINE
+  // ⚡ DYNAMIC PARAMETER RE-CALCULATOR ENGINE
   const handleUpdateExercise = (index, field, newValue) => {
     setDisplayedWorkout((prevWorkout) => {
       if (!prevWorkout) return prevWorkout;
 
-      // Deep copy exercises array to avoid state mutation side effects
       const updatedExercises = [...prevWorkout.exercises];
       const targetExercise = { ...updatedExercises[index] };
 
-      // Update the targeted property field
+      // 1. Commit the raw field adjustment to state
       targetExercise[field] = newValue;
 
-      // Recalculate estimated execution times if sets change
-      if (field === "sets") {
-        const basePerSetTime = Math.round(
-          updatedExercises[index].estTime / updatedExercises[index].sets,
-        );
-        targetExercise.estTime = Number(newValue) * (basePerSetTime || 2);
-      }
+      // 2. Extract current values to process the workload scaling math
+      const currentSets =
+        field === "sets" ? Number(newValue) : Number(targetExercise.sets);
+      const currentVelocity =
+        field === "velocity" ? newValue : targetExercise.velocity;
 
+      // 3. Recompute the specific card duration matching the load properties
+      targetExercise.estTime = calculateExerciseTime(
+        currentSets,
+        currentVelocity,
+      );
       updatedExercises[index] = targetExercise;
 
-      // Recalculate total combined routing duration dynamically
-      const totalAccumulatedMinutes = updatedExercises.reduce(
-        (acc, curr) => acc + curr.estTime,
+      // 4. Sum up all individual exercise times to find the new live workout length
+      const freshTotalMinutes = updatedExercises.reduce(
+        (sum, item) => sum + item.estTime,
         0,
       );
 
       return {
         ...prevWorkout,
         exercises: updatedExercises,
-        totalTime: totalAccumulatedMinutes,
+        totalTime: freshTotalMinutes,
       };
     });
   };
@@ -106,7 +111,7 @@ export default function WorkoutDashboard() {
         />
         <WorkoutPanel
           displayedWorkout={displayedWorkout}
-          onUpdateExercise={handleUpdateExercise} // Hook interactive function parameters
+          onUpdateExercise={handleUpdateExercise}
           onSaveWorkout={handleSaveActiveWorkout}
           historyLogs={savedHistory}
           onClearHistory={() => {
