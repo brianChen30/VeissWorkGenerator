@@ -1,61 +1,76 @@
 // src/utils/workoutGenerator.js
 import { workoutDatabase, secondaryMuscleMap } from "../workoutDatabase";
 
-// ⚡ Dynamic Time Calculator based on Sets and Workload Velocity
-export function calculateExerciseTime(sets, velocity) {
-  let minutesPerSet = 2; // Default baseline allocation
+export function calculateExerciseTime(sets, reps, velocity) {
+  // 🛡️ SANITATION: If fields are blank while typing, fall back to safe baselines
+  const numSets = parseInt(sets, 10);
+  const numReps = parseInt(reps, 10);
+  const numVelocity = parseFloat(velocity);
 
-  // Slower/Heavier loads require longer recovery periods between sets
-  if (velocity === "0.8 m/s" || velocity === "Controlled") {
-    minutesPerSet = 3;
-  }
-  // Lighter velocities or bodyweight movements require less recovery
-  else if (velocity === "1.2 m/s" || velocity === "Bodyweight") {
-    minutesPerSet = 1.5;
+  if (isNaN(numSets) || numSets <= 0) return 0;
+
+  // Compute rep duration (assume average of 4 seconds per mechanical repetition)
+  const finalReps = isNaN(numReps) ? 10 : numReps;
+  const workSecondsPerSet = finalReps * 4;
+
+  // Determine recovery time based entirely on speed metrics
+  const finalVelocity = isNaN(numVelocity) ? 1.0 : numVelocity;
+  let restSecondsPerSet = 90;
+
+  if (finalVelocity <= 0.8) {
+    restSecondsPerSet = 120; // Heavy/slow movements require longer rest windows
+  } else if (finalVelocity >= 1.2) {
+    restSecondsPerSet = 60; // High-speed explosive work requires less rest
   }
 
-  return Math.ceil(sets * minutesPerSet);
+  const totalSeconds = numSets * (workSecondsPerSet + restSecondsPerSet);
+  return Math.ceil(totalSeconds / 60);
 }
 
 export function generateSmartWorkout(muscleGroup, timeLimit) {
   const pool = workoutDatabase[muscleGroup] || [];
   const secondaryString =
-    secondaryMuscleMap[muscleGroup] || "Stabilizer Core Mesh";
+    secondaryMuscleMap[muscleGroup] || "Stabilizers Mapped";
 
   let selectedExercises = [];
   let currentAccumulatedTime = 0;
 
-  // 🧠 SMART DENSITY SCALING: If the global time window shrinks,
-  // reduce the default workload sets so the user can fit more exercises.
   let defaultSets = 4;
   if (timeLimit <= 30) defaultSets = 2;
   else if (timeLimit <= 45) defaultSets = 3;
 
   for (const exercise of pool) {
-    // Determine the baseline speed profile of the exercise
-    const initialVelocity = exercise.velocity || "1.0 m/s";
-    const dynamicEstTime = calculateExerciseTime(defaultSets, initialVelocity);
+    const vel = exercise.velocity || "1.0";
+    const rep = exercise.reps || "10";
+    const dynamicEstTime = calculateExerciseTime(defaultSets, rep, vel);
 
-    // Check if this exercise fits within the user's allocated time block
     if (currentAccumulatedTime + dynamicEstTime <= timeLimit) {
       selectedExercises.push({
         ...exercise,
-        sets: defaultSets,
-        velocity: initialVelocity,
+        sets: String(defaultSets),
+        reps: String(rep),
+        velocity: vel,
         estTime: dynamicEstTime,
       });
       currentAccumulatedTime += dynamicEstTime;
     }
   }
 
-  // Safety fallback line
   if (selectedExercises.length === 0 && pool.length > 0) {
+    const firstEx = pool[0];
     const dynamicEstTime = calculateExerciseTime(
       defaultSets,
-      pool[0].velocity || "1.0 m/s",
+      firstEx.reps,
+      firstEx.velocity,
     );
     selectedExercises = [
-      { ...pool[0], sets: defaultSets, estTime: dynamicEstTime },
+      {
+        ...firstEx,
+        sets: String(defaultSets),
+        reps: String(firstEx.reps),
+        velocity: firstEx.velocity,
+        estTime: dynamicEstTime,
+      },
     ];
     currentAccumulatedTime = dynamicEstTime;
   }

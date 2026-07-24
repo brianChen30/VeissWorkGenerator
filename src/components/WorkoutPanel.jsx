@@ -28,70 +28,88 @@ export default function WorkoutPanel({
           <div key={index} className="exercise-card">
             <div className="exercise-title-area">
               <span className="exercise-index">{index + 1}</span>
-              <strong className="exercise-name">{item.name}</strong>
+              <input
+                type="text"
+                value={item.name}
+                onChange={(e) =>
+                  onUpdateExercise(index, "name", e.target.value)
+                }
+                className="editable-exercise-name-input"
+              />
             </div>
 
-            {/* 🛠️ ADJUSTABLE PARAMETER GRID INTERACTIVE DROPDOWNS */}
             <div className="exercise-metrics-grid">
-              {/* SETS SELECTOR */}
+              {/* SETS COLUMN */}
               <div className="metric-box">
                 <label className="metric-label">Sets</label>
-                <select
-                  value={item.sets}
-                  onChange={(e) =>
-                    onUpdateExercise(index, "sets", Number(e.target.value))
-                  }
-                  className="card-dropdown"
-                >
-                  {[1, 2, 3, 4, 5, 6].map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
-                  ))}
-                </select>
+                <div className="input-with-unit-container">
+                  <input
+                    type="text"
+                    list={`sets-${index}`}
+                    value={item.sets}
+                    onChange={(e) =>
+                      onUpdateExercise(index, "sets", e.target.value)
+                    }
+                    className="hybrid-combobox-input spec-small"
+                  />
+                  <datalist id={`sets-${index}`}>
+                    {["1", "2", "3", "4", "5", "6"].map((v) => (
+                      <option key={v} value={v} />
+                    ))}
+                  </datalist>
+                </div>
               </div>
 
-              {/* REPS SELECTOR */}
+              {/* REPS COLUMN */}
               <div className="metric-box">
                 <label className="metric-label">Reps</label>
-                <select
-                  value={item.reps}
-                  onChange={(e) =>
-                    onUpdateExercise(index, "reps", e.target.value)
-                  }
-                  className="card-dropdown"
-                >
-                  {["5", "8", "10", "12", "15", "AMRAP"].map((rep) => (
-                    <option key={rep} value={rep}>
-                      {rep}
-                    </option>
-                  ))}
-                </select>
+                <div className="input-with-unit-container">
+                  <input
+                    type="text"
+                    list={`reps-${index}`}
+                    value={item.reps}
+                    onChange={(e) =>
+                      onUpdateExercise(index, "reps", e.target.value)
+                    }
+                    className="hybrid-combobox-input spec-medium"
+                  />
+                  <datalist id={`reps-${index}`}>
+                    {["5", "8", "10", "12", "15", "20"].map((v) => (
+                      <option key={v} value={v} />
+                    ))}
+                  </datalist>
+                </div>
               </div>
 
-              {/* VELOCITY / LOAD ADJUSTER */}
+              {/* VELOCITY COLUMN (UNITS DISPLAYED OUTSIDE) */}
               <div className="metric-box">
                 <label className="metric-label">Velocity</label>
-                <select
-                  value={item.velocity}
-                  onChange={(e) =>
-                    onUpdateExercise(index, "velocity", e.target.value)
-                  }
-                  className="card-dropdown velocity-dropdown"
-                >
-                  <option value="Bodyweight">Bodyweight</option>
-                  <option value="1.2 m/s">1.2 m/s</option>
-                  <option value="1.0 m/s">1.0 m/s</option>
-                  <option value="0.9 m/s">0.9 m/s</option>
-                  <option value="0.8 m/s">0.8 m/s</option>
-                  <option value="Controlled">Controlled</option>
-                </select>
+                <div className="input-with-unit-container">
+                  <input
+                    type="text"
+                    list={`vel-${index}`}
+                    value={item.velocity}
+                    onChange={(e) =>
+                      onUpdateExercise(index, "velocity", e.target.value)
+                    }
+                    className="hybrid-combobox-input velocity-field"
+                  />
+                  <datalist id={`vel-${index}`}>
+                    {["1.2", "1.1", "1.0", "0.9", "0.8"].map((v) => (
+                      <option key={v} value={v} />
+                    ))}
+                  </datalist>
+                  <span className="outside-unit-label">m/s</span>
+                </div>
               </div>
 
-              {/* ESTIMATED DURATION READOUT CARD */}
-              <div className="metric-box dynamic-readout">
+              {/* ESTIMATED TIME READOUT CARD */}
+              <div className="metric-box">
                 <label className="metric-label">Est. Time</label>
-                <div className="static-time-display">{item.estTime} min</div>
+                <div className="input-with-unit-container">
+                  <span className="calculated-time-text">{item.estTime}</span>
+                  <span className="outside-unit-label text-gray">min</span>
+                </div>
               </div>
             </div>
           </div>
@@ -120,11 +138,6 @@ export default function WorkoutPanel({
               </div>
             </div>
           ))}
-          {historyLogs.length === 0 && (
-            <div className="empty-history-placeholder">
-              Save workouts above to track analytics history profiles.
-            </div>
-          )}
         </div>
       </div>
     </div>
