@@ -10,99 +10,91 @@
   border: 1px solid #1e2235;
 }
 
-.panel-header {
-  margin: 0;
-  font-size: 15px;
+.view-toggle-tabs {
+  display: flex;
+  background-color: #0c0d12;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #1c1f30;
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  padding: 10px;
+  font-size: 13px;
   font-weight: 600;
-  color: #8b92a5;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: #ffffff;
+}
+
+.tab-btn.active-tab {
+  background-color: #1c1f30;
+  color: #a855f7;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .anatomy-container {
   background-color: #0c0d12;
   border: 1px solid #1c1f30;
   border-radius: 12px;
-  padding: 30px 10px;
-  margin: 20px 0;
+  padding: 20px;
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
+  justify-content: center;
 }
 
-.anatomy-svg {
-  width: 100%;
-  max-height: 320px;
-}
-
-/* Base structural meshes (head, neck, etc.) that aren't selectable groups */
-.anatomy-base-mesh {
-  fill: #1a1d2c;
-}
-
-/* Default unselected state for muscle paths */
-.muscle-path {
-  fill: #222538; /* Matches the dark gray/blue aesthetic from your photo */
-  stroke: #0c0d12; /* Clean black line breaks separating muscles */
-  stroke-width: 1.5;
+/* TARGET THE PACKAGE PATH ELEMENTS DIRECTLY FOR THE PURPLE GLOW */
+.anatomy-container svg path {
   cursor: pointer;
   transition:
     fill 0.2s ease,
-    filter 0.2s ease;
+    filter 0.2s ease !important;
 }
 
-/* Hovering effect */
-.muscle-path:hover {
-  fill: #3b3f5c;
+.anatomy-container svg path:hover {
+  fill: #3b3f5c !important;
 }
 
-/* 🔥 The UI selection style matching your second screenshot exactly! */
-.muscle-path.active-glow {
-  fill: #8b5cf6; /* Vibrant bright purple */
-  filter: drop-shadow(
-    0px 0px 6px rgba(139, 92, 246, 0.7)
-  ); /* Cyberpunk neon illumination glow */
-}
-
-.interaction-badge {
-  color: #4b526d;
-  font-size: 11px;
-  margin-top: 15px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/* Glow rule matching the reference dashboard */
+.anatomy-container svg path[fill="#a855f7"] {
+  filter: drop-shadow(0px 0px 8px rgba(168, 85, 247, 0.85)) !important;
 }
 
 .muscle-info-card {
   background-color: #11131e;
-  padding: 18px;
+  padding: 16px;
   border-radius: 12px;
   border: 1px solid #1c1f30;
 }
 
 .primary-label {
-  color: #8b5cf6;
+  color: #a855f7;
   font-weight: bold;
   margin: 0 0 4px 0;
-  font-size: 13px;
+  font-size: 12px;
 }
-
 .muscle-title-text {
   color: #fff;
-  margin: 0 0 14px 0;
-  font-size: 16px;
+  margin: 0 0 10px 0;
+  font-size: 15px;
   font-weight: 600;
 }
-
 .secondary-label {
   color: #6c7387;
-  font-size: 12px;
+  font-size: 11px;
   margin: 0 0 4px 0;
 }
-
 .muscle-secondary-text {
-  color: #d1d5db;
+  color: #9ca3af;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
 }

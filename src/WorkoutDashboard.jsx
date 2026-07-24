@@ -9,97 +9,113 @@ import "./WorkoutDashboard.css";
 export default function WorkoutDashboard() {
   const [selectedMuscle, setSelectedMuscle] = useState("Chest");
   const [workoutTime, setWorkoutTime] = useState(60);
-
-  const [history, setHistory] = useState(() => {
-    const saved = localStorage.getItem("workout_history");
-    return saved ? JSON.parse(saved) : [];
-  });
-
   const [displayedWorkout, setDisplayedWorkout] = useState(() =>
-    generateSmartWorkout("Chest", 60, []),
+    generateSmartWorkout("Chest", 60),
   );
+  const [savedHistory, setSavedHistory] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem("workout_history", JSON.stringify(history));
-  }, [history]);
+    const localData = localStorage.getItem("veiss_workout_history");
+    if (localData) setSavedHistory(JSON.parse(localData));
+  }, []);
 
-  // Unified dynamic generation engine
-  const handleGenerateWorkout = (muscleTarget = selectedMuscle) => {
-    const timeLimit = parseInt(workoutTime, 10) || 45;
-    const dynamicPlan = generateSmartWorkout(muscleTarget, timeLimit, history);
-    setDisplayedWorkout(dynamicPlan);
+  const handleMuscleChange = (targetMuscle, timeContext = workoutTime) => {
+    setSelectedMuscle(targetMuscle);
+    const newRoutine = generateSmartWorkout(targetMuscle, timeContext);
+    setDisplayedWorkout(newRoutine);
   };
 
-  // ⚡ The Magic Trick: This handles clicking directly on a body element shape
-  const handleBodyPartClick = (muscleName) => {
-    setSelectedMuscle(muscleName); // 1. Lights up the graphic & sets dropdown choice
-    handleGenerateWorkout(muscleName); // 2. Instantly generates the new plan out of the pool
+  const handleTimeChange = (newTimeMinutes) => {
+    setWorkoutTime(newTimeMinutes);
+    handleMuscleChange(selectedMuscle, newTimeMinutes);
   };
 
-  const handleCompleteWorkout = () => {
-    if (!displayedWorkout.exercises.length) return;
-    const newRecord = {
+  // ⚡ LIVE EXERCISE PARAMETER TWEAKER SWITCH ENGINE
+  const handleUpdateExercise = (index, field, newValue) => {
+    setDisplayedWorkout((prevWorkout) => {
+      if (!prevWorkout) return prevWorkout;
+
+      // Deep copy exercises array to avoid state mutation side effects
+      const updatedExercises = [...prevWorkout.exercises];
+      const targetExercise = { ...updatedExercises[index] };
+
+      // Update the targeted property field
+      targetExercise[field] = newValue;
+
+      // Recalculate estimated execution times if sets change
+      if (field === "sets") {
+        const basePerSetTime = Math.round(
+          updatedExercises[index].estTime / updatedExercises[index].sets,
+        );
+        targetExercise.estTime = Number(newValue) * (basePerSetTime || 2);
+      }
+
+      updatedExercises[index] = targetExercise;
+
+      // Recalculate total combined routing duration dynamically
+      const totalAccumulatedMinutes = updatedExercises.reduce(
+        (acc, curr) => acc + curr.estTime,
+        0,
+      );
+
+      return {
+        ...prevWorkout,
+        exercises: updatedExercises,
+        totalTime: totalAccumulatedMinutes,
+      };
+    });
+  };
+
+  const handleSaveActiveWorkout = () => {
+    if (!displayedWorkout || displayedWorkout.exercises.length === 0) return;
+    const snapshotToSave = {
       id: Date.now(),
-      date: new Date().toISOString(),
-      muscleGroup: selectedMuscle,
+      timestamp:
+        new Date().toLocaleDateString() +
+        " @ " +
+        new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      primary: displayedWorkout.primary,
+      totalTime: displayedWorkout.totalTime,
+      exercisesCount: displayedWorkout.exercises.length,
       exercises: displayedWorkout.exercises,
     };
-    setHistory((prev) => [newRecord, ...prev]);
-    alert(`💪 Workout logged!`);
+    const updatedHistory = [snapshotToSave, ...savedHistory];
+    setSavedHistory(updatedHistory);
+    localStorage.setItem(
+      "veiss_workout_history",
+      JSON.stringify(updatedHistory),
+    );
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-wrapper">
       <Sidebar
         selectedMuscle={selectedMuscle}
-        setSelectedMuscle={setSelectedMuscle}
+        onMuscleChange={(m) => handleMuscleChange(m)}
         workoutTime={workoutTime}
-        setWorkoutTime={setWorkoutTime}
-        onGenerate={() => handleGenerateWorkout(selectedMuscle)}
+        onTimeChange={handleTimeChange}
       />
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 3,
-          gap: "20px",
-        }}
-      >
-        {displayedWorkout.isAdaptive && (
-          <div className="ai-notification-banner">
-            🤖 <strong>AI Optimization Active:</strong> Plan customized based on
-            your history.
-          </div>
-        )}
-
-        <div style={{ display: "flex", gap: "20px", flex: 1 }}>
-          <AnatomyPanel
-            selectedMuscle={selectedMuscle}
-            onBodyPartClick={handleBodyPartClick} // Passing the specialized handler down
-            displayedWorkout={displayedWorkout}
-          />
-
-          <div
-            style={{
-              flex: 2,
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-            }}
-          >
-            <WorkoutPanel
-              workoutTime={workoutTime}
-              displayedWorkout={displayedWorkout}
-            />
-            <button
-              onClick={handleCompleteWorkout}
-              className="complete-workout-btn"
-            >
-              ✅ Complete & Log This Workout
-            </button>
-          </div>
-        </div>
+      <div className="dashboard-content-grid">
+        <AnatomyPanel
+          selectedMuscle={selectedMuscle}
+          onBodyPartClick={(m) => handleMuscleChange(m)}
+          displayedWorkout={displayedWorkout}
+        />
+        <WorkoutPanel
+          displayedWorkout={displayedWorkout}
+          onUpdateExercise={handleUpdateExercise} // Hook interactive function parameters
+          onSaveWorkout={handleSaveActiveWorkout}
+          historyLogs={savedHistory}
+          onClearHistory={() => {
+            if (window.confirm("Clear logs?")) {
+              setSavedHistory([]);
+              localStorage.removeItem("veiss_workout_history");
+            }
+          }}
+        />
       </div>
     </div>
   );
