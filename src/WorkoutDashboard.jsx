@@ -73,10 +73,6 @@ export default function WorkoutDashboard() {
   const handleForceGenerate = () => {
     const freshRoutine = generateSmartWorkout(selectedMuscle, workoutTime);
     setDisplayedWorkout(freshRoutine);
-
-    // ❌ REMOVED: setWorkoutTime(freshRoutine.totalTime);
-    // This allows the sidebar to retain your exact target value (e.g., 24)
-    // while the algorithm fills out the card structure as close to it as possible!
   };
 
   // ✍️ LIVE PARAMETER REFLECTOR ENGINE
