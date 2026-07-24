@@ -27,6 +27,7 @@
 .time-badge {
   font-size: 13px;
   color: #a855f7;
+  font-weight: 600;
 }
 
 .save-workout-btn {
@@ -36,6 +37,8 @@
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .save-workout-btn:hover {
@@ -46,7 +49,7 @@
 .exercise-list-stack {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .exercise-card {
@@ -57,6 +60,7 @@
   padding: 16px;
   border-radius: 12px;
   border: 1px solid #1c1f30;
+  position: relative; /* Context anchor for absolute child list dropdowns */
 }
 
 .exercise-title-area {
@@ -88,15 +92,17 @@
   padding: 4px;
   width: 85%;
   outline: none;
+  border-radius: 4px;
 }
 
 .editable-exercise-name-input:focus {
-  border-bottom-color: #a855f7;
+  background-color: #14151f;
+  border-color: #23273a;
 }
 
 .exercise-metrics-grid {
   display: flex;
-  gap: 20px;
+  gap: 24px;
 }
 
 .metric-box {
@@ -112,62 +118,127 @@
   letter-spacing: 0.05em;
 }
 
-/* ⚡ FLEX CONTAINER TO ALIGN LABELS OUTSIDE INPUTS */
-.input-with-unit-container {
+/* ⚡ BRAND NEW CUSTOM COMBOBOX BOX CONTAINER LAYER GRAPHICS */
+.custom-combobox-container {
+  position: relative;
+  display: inline-block;
+}
+
+.input-unit-wrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
+  background-color: #14151f;
+  border: 1px solid #23273a;
+  border-radius: 6px;
+  padding-right: 6px;
+  transition: border-color 0.2s;
+}
+
+.input-unit-wrapper:focus-within {
+  border-color: #a855f7;
 }
 
 .hybrid-combobox-input {
-  background-color: #14151f;
+  background: transparent;
   color: #fff;
-  border: 1px solid #23273a;
-  padding: 6px;
-  border-radius: 6px;
+  border: none;
+  padding: 6px 4px 6px 8px;
   font-size: 13px;
   font-weight: 600;
   text-align: center;
   outline: none;
 }
 
-.hybrid-combobox-input:focus {
-  border-color: #a855f7;
-}
-
 .spec-small {
-  width: 35px;
+  width: 30px;
 }
 .spec-medium {
   width: 45px;
 }
 .velocity-field {
-  width: 45px;
-  text-align: center;
+  width: 35px;
+}
+
+/* Elegant minimal option navigation arrow key trigger button */
+.combobox-arrow-btn {
+  background: transparent;
+  border: none;
+  color: #4b526d;
+  font-size: 8px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.combobox-arrow-btn:hover {
+  color: #ffffff;
 }
 
 .outside-unit-label {
-  color: #4b526d;
+  color: #6b7280;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  padding-left: 4px;
+  padding-right: 4px;
+  user-select: none;
 }
 
 .text-gray {
-  color: #6b7280;
+  color: #4b526d;
+}
+
+.static-readout-padding {
+  background: transparent !important;
+  border: 1px solid transparent !important;
 }
 
 .calculated-time-text {
   color: #fff;
   font-size: 14px;
   font-weight: 700;
-  min-width: 18px;
-  text-align: right;
 }
 
-/* History Log Elements */
+/* 🔮 FLOATING OVERLAY MENU SELECT POPUP */
+.combobox-options-list {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  width: 100%;
+  min-width: 75px;
+  background-color: #14151f;
+  border: 1px solid #23273a;
+  border-radius: 6px;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  z-index: 100;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5);
+  max-height: 165px;
+  overflow-y: auto;
+}
+
+.combobox-option-item {
+  padding: 6px 12px;
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.combobox-option-item:hover {
+  background-color: #23273a;
+  color: #a855f7;
+}
+
+/* History Logs Panels Styling */
 .analytics-history-section {
   border-top: 1px solid #1c1f30;
   padding-top: 16px;
+  margin-top: auto;
 }
 
 .analytics-header {

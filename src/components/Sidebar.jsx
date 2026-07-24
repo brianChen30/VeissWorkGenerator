@@ -7,6 +7,7 @@ export default function Sidebar({
   onMuscleChange,
   workoutTime,
   onTimeChange,
+  onGenerateClick,
 }) {
   return (
     <div className="sidebar-container">
@@ -63,10 +64,8 @@ export default function Sidebar({
         </div>
       </div>
 
-      <button
-        className="ai-generate-btn"
-        onClick={() => onMuscleChange(selectedMuscle)}
-      >
+      {/* 🔗 Bound directly to the dedicated generator algorithm controller */}
+      <button className="ai-generate-btn" onClick={onGenerateClick}>
         ✨ Generate Workout
       </button>
     </div>

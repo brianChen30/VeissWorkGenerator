@@ -1,6 +1,66 @@
 // src/components/WorkoutPanel.jsx
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./WorkoutPanel.css";
+
+// ⚡ REUSABLE HYBRID COMBOBOX COMPONENT
+function EditableDropdown({ value, options, onChange, className, unit }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  // Auto-close the option menu if the user clicks outside of it
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="custom-combobox-container" ref={containerRef}>
+      <div className="input-unit-wrapper">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setIsOpen(true)}
+          className={`hybrid-combobox-input ${className}`}
+        />
+        {/* The explicit visual dropdown arrow button */}
+        <button
+          type="button"
+          className="combobox-arrow-btn"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          ▼
+        </button>
+        {unit && <span className="outside-unit-label">{unit}</span>}
+      </div>
+
+      {isOpen && (
+        <ul className="combobox-options-list">
+          {options.map((option) => (
+            <li
+              key={option}
+              onClick={() => {
+                onChange(option);
+                setIsOpen(false);
+              }}
+              className="combobox-option-item"
+            >
+              {option}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 export default function WorkoutPanel({
   displayedWorkout,
@@ -39,74 +99,44 @@ export default function WorkoutPanel({
             </div>
 
             <div className="exercise-metrics-grid">
-              {/* SETS COLUMN */}
+              {/* SETS PARAMETER */}
               <div className="metric-box">
                 <label className="metric-label">Sets</label>
-                <div className="input-with-unit-container">
-                  <input
-                    type="text"
-                    list={`sets-${index}`}
-                    value={item.sets}
-                    onChange={(e) =>
-                      onUpdateExercise(index, "sets", e.target.value)
-                    }
-                    className="hybrid-combobox-input spec-small"
-                  />
-                  <datalist id={`sets-${index}`}>
-                    {["1", "2", "3", "4", "5", "6"].map((v) => (
-                      <option key={v} value={v} />
-                    ))}
-                  </datalist>
-                </div>
+                <EditableDropdown
+                  value={item.sets}
+                  options={["1", "2", "3", "4", "5", "6"]}
+                  onChange={(val) => onUpdateExercise(index, "sets", val)}
+                  className="spec-small"
+                />
               </div>
 
-              {/* REPS COLUMN */}
+              {/* REPS PARAMETER */}
               <div className="metric-box">
                 <label className="metric-label">Reps</label>
-                <div className="input-with-unit-container">
-                  <input
-                    type="text"
-                    list={`reps-${index}`}
-                    value={item.reps}
-                    onChange={(e) =>
-                      onUpdateExercise(index, "reps", e.target.value)
-                    }
-                    className="hybrid-combobox-input spec-medium"
-                  />
-                  <datalist id={`reps-${index}`}>
-                    {["5", "8", "10", "12", "15", "20"].map((v) => (
-                      <option key={v} value={v} />
-                    ))}
-                  </datalist>
-                </div>
+                <EditableDropdown
+                  value={item.reps}
+                  options={["5", "8", "10", "12", "15", "20", "AMRAP"]}
+                  onChange={(val) => onUpdateExercise(index, "reps", val)}
+                  className="spec-medium"
+                />
               </div>
 
-              {/* VELOCITY COLUMN (UNITS DISPLAYED OUTSIDE) */}
+              {/* VELOCITY PARAMETER (WITH EXTERNAL UNITS) */}
               <div className="metric-box">
                 <label className="metric-label">Velocity</label>
-                <div className="input-with-unit-container">
-                  <input
-                    type="text"
-                    list={`vel-${index}`}
-                    value={item.velocity}
-                    onChange={(e) =>
-                      onUpdateExercise(index, "velocity", e.target.value)
-                    }
-                    className="hybrid-combobox-input velocity-field"
-                  />
-                  <datalist id={`vel-${index}`}>
-                    {["1.2", "1.1", "1.0", "0.9", "0.8"].map((v) => (
-                      <option key={v} value={v} />
-                    ))}
-                  </datalist>
-                  <span className="outside-unit-label">m/s</span>
-                </div>
+                <EditableDropdown
+                  value={item.velocity}
+                  options={["1.2", "1.1", "1.0", "0.9", "0.8"]}
+                  onChange={(val) => onUpdateExercise(index, "velocity", val)}
+                  className="velocity-field"
+                  unit="m/s"
+                />
               </div>
 
-              {/* ESTIMATED TIME READOUT CARD */}
+              {/* LIVE DYNAMIC RUNTIME DISPLAY */}
               <div className="metric-box">
                 <label className="metric-label">Est. Time</label>
-                <div className="input-with-unit-container">
+                <div className="input-unit-wrapper static-readout-padding">
                   <span className="calculated-time-text">{item.estTime}</span>
                   <span className="outside-unit-label text-gray">min</span>
                 </div>
