@@ -10,62 +10,58 @@ export default function AnatomyPanel({
 }) {
   const [viewSide, setViewSide] = useState("front");
 
-  // This maps YOUR app's names to the library's SVG parts
   const muscleToSlug = {
     Chest: ["chest"],
-    Core: ["abs", "obliques"],
-    Shoulders: ["front-deltoids", "back-deltoids"],
+    Core: ["abs"],
+    Obliques: ["obliques"],
+    Shoulders: ["deltoids"],
     Biceps: ["biceps"],
     Forearms: ["forearm"],
+    Hands: ["hands"],
     Quadriceps: ["quadriceps"],
+    Adductors: ["adductors"],
+    Tibialis: ["tibialis"],
+    Knees: ["knees"],
+    Ankles: ["ankles"],
+    Feet: ["feet"],
+    Head: ["head"],
+    Neck: ["neck"],
     Trapezius: ["trapezius"],
+    "Upper Back": ["upper-back"],
     Lats: ["upper-back"],
     "Lower Back": ["lower-back"],
     Triceps: ["triceps"],
     Glutes: ["gluteal"],
     Hamstrings: ["hamstring"],
     Calves: ["calves"],
+    Hair: ["hair"],
   };
 
-  // This catches clicks on the library's SVG parts and maps them back to YOUR app.
-  // Expanded to catch any weird plural/singular variations the library might throw!
   const slugToMuscle = {
-    chest: "Chest",
     abs: "Core",
-    obliques: "Core",
-
-    // Catching every shoulder variation
-    "front-deltoids": "Shoulders",
-    "back-deltoids": "Shoulders",
-    "front-deltoid": "Shoulders",
-    "back-deltoid": "Shoulders",
-    deltoids: "Shoulders",
-    deltoid: "Shoulders",
-
+    adductors: "Adductors",
+    ankles: "Ankles",
     biceps: "Biceps",
-    triceps: "Triceps",
-    forearm: "Forearms",
-    forearms: "Forearms",
-
-    trapezius: "Trapezius",
-    "upper-back": "Lats",
-    "lower-back": "Lower Back",
-
-    quadriceps: "Quadriceps",
-    hamstring: "Hamstrings",
-    hamstrings: "Hamstrings",
     calves: "Calves",
-    calf: "Calves",
+    chest: "Chest",
+    deltoids: "Shoulders",
+    feet: "Feet",
+    forearm: "Forearms",
     gluteal: "Glutes",
-    glutes: "Glutes",
-
-    // Optional edge cases for legs
-    adductor: "Quadriceps",
-    abductors: "Glutes",
+    hamstring: "Hamstrings",
+    hands: "Hands",
+    hair: "Hair",
+    head: "Head",
+    knees: "Knees",
+    "lower-back": "Lower Back",
+    neck: "Neck",
+    obliques: "Obliques",
+    quadriceps: "Quadriceps",
+    tibialis: "Tibialis",
+    trapezius: "Trapezius",
+    triceps: "Triceps",
+    "upper-back": "Upper Back",
   };
-
-  // NOTE: The annoying auto-spin useEffect has been completely deleted!
-  // The model will now only flip when you click the Anterior/Posterior buttons.
 
   const handleComponentClick = (part) => {
     if (!part?.slug) return;
@@ -113,11 +109,13 @@ export default function AnatomyPanel({
       <div className="muscle-info-card">
         <p className="primary-label">● Target Muscle Group</p>
         <h4 className="muscle-title-text">
-          {displayedWorkout?.primary || selectedMuscles.join(", ")}
+          {displayedWorkout?.primary === "None" || selectedMuscles.length === 0
+            ? "None Selected"
+            : displayedWorkout?.primary || selectedMuscles.join(", ")}
         </h4>
         <p className="secondary-label">Secondary Activation</p>
         <p className="muscle-secondary-text">
-          {displayedWorkout?.secondary || "None logged"}
+          {displayedWorkout?.secondary || "-"}
         </p>
       </div>
     </div>

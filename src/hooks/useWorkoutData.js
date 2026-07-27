@@ -7,11 +7,18 @@ import {
 } from "../utils/workoutGenerator";
 
 export function useWorkoutData() {
-  const [selectedMuscles, setSelectedMuscles] = useState(["Chest"]); // Now an array
+  // Start completely empty
+  const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [workoutTime, setWorkoutTime] = useState(60);
-  const [displayedWorkout, setDisplayedWorkout] = useState(() =>
-    generateSmartWorkout(["Chest"], 60),
-  );
+
+  // Start with a blank placeholder workout
+  const [displayedWorkout, setDisplayedWorkout] = useState({
+    primary: "None Selected",
+    secondary: "-",
+    exercises: [],
+    totalTime: 0,
+  });
+
   const [savedHistory, setSavedHistory] = useState([]);
 
   useEffect(() => {
@@ -45,33 +52,43 @@ export function useWorkoutData() {
     fetchLogs();
   }, []);
 
-  // Toggle function for multi-select
   const handleMuscleToggle = (muscle) => {
     setSelectedMuscles((prev) => {
       let newSelection;
       if (prev.includes(muscle)) {
-        // Remove if already selected
         newSelection = prev.filter((m) => m !== muscle);
       } else {
-        // Add if not selected
         newSelection = [...prev, muscle];
       }
 
-      // Prevent user from unselecting everything (fallback to Chest)
-      if (newSelection.length === 0) newSelection = ["Chest"];
+      // If the user unchecks everything, clear the workout panel
+      if (newSelection.length === 0) {
+        setDisplayedWorkout({
+          primary: "None Selected",
+          secondary: "-",
+          exercises: [],
+          totalTime: 0,
+        });
+      } else {
+        setDisplayedWorkout(generateSmartWorkout(newSelection, workoutTime));
+      }
 
-      setDisplayedWorkout(generateSmartWorkout(newSelection, workoutTime));
       return newSelection;
     });
   };
 
   const handleForceGenerate = () => {
+    if (selectedMuscles.length === 0) {
+      alert("Please select at least one muscle group to generate a workout.");
+      return;
+    }
     setDisplayedWorkout(generateSmartWorkout(selectedMuscles, workoutTime));
   };
 
   const handleUpdateExercise = (index, field, newValue) => {
     setDisplayedWorkout((prevWorkout) => {
-      if (!prevWorkout) return prevWorkout;
+      if (!prevWorkout || prevWorkout.exercises.length === 0)
+        return prevWorkout;
 
       const updatedExercises = [...prevWorkout.exercises];
       updatedExercises[index] = {
@@ -100,7 +117,10 @@ export function useWorkoutData() {
   };
 
   const handleSaveActiveWorkout = async () => {
-    if (!displayedWorkout || displayedWorkout.exercises.length === 0) return;
+    if (!displayedWorkout || displayedWorkout.exercises.length === 0) {
+      alert("No workout generated to save.");
+      return;
+    }
 
     const { data, error } = await supabase
       .from("workout_history")

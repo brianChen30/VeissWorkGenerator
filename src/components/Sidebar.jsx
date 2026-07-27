@@ -3,15 +3,26 @@ import React, { useState, useRef, useEffect } from "react";
 import "./Sidebar.css";
 
 const anteriorOptions = [
+  "Head",
+  "Neck",
   "Chest",
   "Core",
+  "Obliques",
   "Shoulders",
   "Biceps",
   "Forearms",
+  "Hands",
   "Quadriceps",
+  "Adductors",
+  "Knees",
+  "Tibialis",
+  "Ankles",
+  "Feet",
 ];
 const posteriorOptions = [
+  "Hair",
   "Trapezius",
+  "Upper Back",
   "Lats",
   "Lower Back",
   "Triceps",
@@ -30,7 +41,6 @@ export default function Sidebar({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown if clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -53,15 +63,17 @@ export default function Sidebar({
           <span className="step-number">1</span> Muscle Groups
         </label>
 
-        {/* Custom Multi-Select Dropdown */}
         <div className="multi-select-container" ref={dropdownRef}>
           <div
             className={`modern-select ${isDropdownOpen ? "active" : ""}`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {selectedMuscles.length === 1
-              ? selectedMuscles[0]
-              : `${selectedMuscles.length} Groups Selected`}
+            {/* Handle the zero-state text beautifully */}
+            {selectedMuscles.length === 0
+              ? "Select Muscle Groups..."
+              : selectedMuscles.length === 1
+                ? selectedMuscles[0]
+                : `${selectedMuscles.length} Groups Selected`}
           </div>
 
           {isDropdownOpen && (
