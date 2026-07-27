@@ -1,5 +1,5 @@
 // src/components/AnatomyPanel.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Body from "react-muscle-highlighter";
 import "./AnatomyPanel.css";
 
@@ -10,75 +10,76 @@ export default function AnatomyPanel({
 }) {
   const [viewSide, setViewSide] = useState("front");
 
+  // This maps YOUR app's names to the library's SVG parts
   const muscleToSlug = {
-    Chest: "chest",
-    Core: "abs",
-    Shoulders: "deltoids",
-    Biceps: "biceps",
-    Forearms: "forearm",
-    Quadriceps: "quadriceps",
-    Trapezius: "trapezius",
-    Lats: "upper-back",
-    "Lower Back": "lower-back",
-    Triceps: "triceps",
-    Glutes: "gluteal",
-    Hamstrings: "hamstring",
-    Calves: "calves",
+    Chest: ["chest"],
+    Core: ["abs", "obliques"],
+    Shoulders: ["front-deltoids", "back-deltoids"],
+    Biceps: ["biceps"],
+    Forearms: ["forearm"],
+    Quadriceps: ["quadriceps"],
+    Trapezius: ["trapezius"],
+    Lats: ["upper-back"],
+    "Lower Back": ["lower-back"],
+    Triceps: ["triceps"],
+    Glutes: ["gluteal"],
+    Hamstrings: ["hamstring"],
+    Calves: ["calves"],
   };
 
+  // This catches clicks on the library's SVG parts and maps them back to YOUR app.
+  // Expanded to catch any weird plural/singular variations the library might throw!
   const slugToMuscle = {
     chest: "Chest",
     abs: "Core",
+    obliques: "Core",
+
+    // Catching every shoulder variation
+    "front-deltoids": "Shoulders",
+    "back-deltoids": "Shoulders",
+    "front-deltoid": "Shoulders",
+    "back-deltoid": "Shoulders",
     deltoids: "Shoulders",
+    deltoid: "Shoulders",
+
     biceps: "Biceps",
+    triceps: "Triceps",
     forearm: "Forearms",
-    quadriceps: "Quadriceps",
+    forearms: "Forearms",
+
     trapezius: "Trapezius",
     "upper-back": "Lats",
     "lower-back": "Lower Back",
-    triceps: "Triceps",
-    gluteal: "Glutes",
+
+    quadriceps: "Quadriceps",
     hamstring: "Hamstrings",
+    hamstrings: "Hamstrings",
     calves: "Calves",
+    calf: "Calves",
+    gluteal: "Glutes",
+    glutes: "Glutes",
+
+    // Optional edge cases for legs
+    adductor: "Quadriceps",
+    abductors: "Glutes",
   };
 
-  const posteriorMuscles = [
-    "Trapezius",
-    "Lats",
-    "Lower Back",
-    "Triceps",
-    "Glutes",
-    "Hamstrings",
-    "Calves",
-  ];
-
-  // Auto-spin logic: If they select more back muscles than front muscles, spin it around
-  useEffect(() => {
-    const posteriorCount = selectedMuscles.filter((m) =>
-      posteriorMuscles.includes(m),
-    ).length;
-    const anteriorCount = selectedMuscles.length - posteriorCount;
-
-    if (posteriorCount > anteriorCount) {
-      setViewSide("back");
-    } else {
-      setViewSide("front");
-    }
-  }, [selectedMuscles]);
+  // NOTE: The annoying auto-spin useEffect has been completely deleted!
+  // The model will now only flip when you click the Anterior/Posterior buttons.
 
   const handleComponentClick = (part) => {
     if (!part?.slug) return;
+
     const coreAppName = slugToMuscle[part.slug];
     if (coreAppName) {
-      onBodyPartClick(coreAppName); // Now acts as a toggle click!
+      onBodyPartClick(coreAppName);
     }
   };
 
-  // Map the array of muscles into the data format the library expects
-  const highlightData = selectedMuscles.map((muscle) => ({
-    slug: muscleToSlug[muscle] || "chest",
-    color: "#FFB800",
-  }));
+  const highlightData = selectedMuscles.flatMap((muscle) => {
+    const slugs = muscleToSlug[muscle] || [];
+    return slugs.map((slug) => ({ slug, color: "#FFB800" }));
+  });
 
   return (
     <div className="anatomy-panel">
