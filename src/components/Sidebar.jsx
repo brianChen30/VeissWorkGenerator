@@ -68,7 +68,6 @@ export default function Sidebar({
             className={`modern-select ${isDropdownOpen ? "active" : ""}`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {/* Handle the zero-state text beautifully */}
             {selectedMuscles.length === 0
               ? "Select Muscle Groups..."
               : selectedMuscles.length === 1
@@ -79,28 +78,32 @@ export default function Sidebar({
           {isDropdownOpen && (
             <div className="multi-select-menu">
               <div className="multi-select-group-title">Anterior (Front)</div>
-              {anteriorOptions.map((muscle) => (
-                <div
-                  key={muscle}
-                  className={`multi-select-item ${selectedMuscles.includes(muscle) ? "selected" : ""}`}
-                  onClick={() => onMuscleToggle(muscle)}
-                >
-                  <div className="checkbox-ui"></div>
-                  {muscle}
-                </div>
-              ))}
+              {/* NEW: Pill Grid Container */}
+              <div className="muscle-pills-container">
+                {anteriorOptions.map((muscle) => (
+                  <div
+                    key={muscle}
+                    className={`muscle-pill ${selectedMuscles.includes(muscle) ? "selected" : ""}`}
+                    onClick={() => onMuscleToggle(muscle)}
+                  >
+                    {muscle}
+                  </div>
+                ))}
+              </div>
 
               <div className="multi-select-group-title">Posterior (Back)</div>
-              {posteriorOptions.map((muscle) => (
-                <div
-                  key={muscle}
-                  className={`multi-select-item ${selectedMuscles.includes(muscle) ? "selected" : ""}`}
-                  onClick={() => onMuscleToggle(muscle)}
-                >
-                  <div className="checkbox-ui"></div>
-                  {muscle}
-                </div>
-              ))}
+              {/* NEW: Pill Grid Container */}
+              <div className="muscle-pills-container">
+                {posteriorOptions.map((muscle) => (
+                  <div
+                    key={muscle}
+                    className={`muscle-pill ${selectedMuscles.includes(muscle) ? "selected" : ""}`}
+                    onClick={() => onMuscleToggle(muscle)}
+                  >
+                    {muscle}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
