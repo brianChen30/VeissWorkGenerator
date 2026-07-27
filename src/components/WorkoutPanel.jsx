@@ -1,66 +1,6 @@
-// src/components/WorkoutPanel.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import EditableDropdown from "./EditableDropdown";
 import "./WorkoutPanel.css";
-
-// ⚡ REUSABLE HYBRID COMBOBOX COMPONENT
-function EditableDropdown({ value, options, onChange, className, unit }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef(null);
-
-  // Auto-close the option menu if the user clicks outside of it
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  return (
-    <div className="custom-combobox-container" ref={containerRef}>
-      <div className="input-unit-wrapper">
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsOpen(true)}
-          className={`hybrid-combobox-input ${className}`}
-        />
-        {/* The explicit visual dropdown arrow button */}
-        <button
-          type="button"
-          className="combobox-arrow-btn"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          ▼
-        </button>
-        {unit && <span className="outside-unit-label">{unit}</span>}
-      </div>
-
-      {isOpen && (
-        <ul className="combobox-options-list">
-          {options.map((option) => (
-            <li
-              key={option}
-              onClick={() => {
-                onChange(option);
-                setIsOpen(false);
-              }}
-              className="combobox-option-item"
-            >
-              {option}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
 
 export default function WorkoutPanel({
   displayedWorkout,
@@ -99,7 +39,6 @@ export default function WorkoutPanel({
             </div>
 
             <div className="exercise-metrics-grid">
-              {/* SETS PARAMETER */}
               <div className="metric-box">
                 <label className="metric-label">Sets</label>
                 <EditableDropdown
@@ -110,7 +49,6 @@ export default function WorkoutPanel({
                 />
               </div>
 
-              {/* REPS PARAMETER */}
               <div className="metric-box">
                 <label className="metric-label">Reps</label>
                 <EditableDropdown
@@ -121,7 +59,6 @@ export default function WorkoutPanel({
                 />
               </div>
 
-              {/* VELOCITY PARAMETER (WITH EXTERNAL UNITS) */}
               <div className="metric-box">
                 <label className="metric-label">Velocity</label>
                 <EditableDropdown
@@ -133,7 +70,6 @@ export default function WorkoutPanel({
                 />
               </div>
 
-              {/* LIVE DYNAMIC RUNTIME DISPLAY */}
               <div className="metric-box">
                 <label className="metric-label">Est. Time</label>
                 <div className="input-unit-wrapper static-readout-padding">
