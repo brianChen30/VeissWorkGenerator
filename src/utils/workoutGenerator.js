@@ -9,27 +9,47 @@ export function calculateExerciseTime(sets, reps, velocity) {
   if (isNaN(numSets) || numSets <= 0) return 0;
 
   const finalReps = isNaN(numReps) ? 10 : numReps;
-  const workSecondsPerSet = finalReps * 4; // 4 seconds per mechanical rep
+  const workSecondsPerSet = finalReps * 4;
 
   const finalVelocity = isNaN(numVelocity) ? 1.0 : numVelocity;
   let restSecondsPerSet = 90;
 
   if (finalVelocity <= 0.8) {
-    restSecondsPerSet = 120; // Heavy/slow requires more rest
+    restSecondsPerSet = 120;
   } else if (finalVelocity >= 1.2) {
-    restSecondsPerSet = 60; // High-speed explosive requires less rest
+    restSecondsPerSet = 60;
   }
 
   const totalSeconds = numSets * (workSecondsPerSet + restSecondsPerSet);
   return Math.ceil(totalSeconds / 60);
 }
 
-export function generateSmartWorkout(muscleGroup, timeLimit) {
-  const pool = workoutDatabase[muscleGroup] || [];
-  const secondaryString =
-    secondaryMuscleMap[muscleGroup] || "Stabilizers Mapped";
+export function generateSmartWorkout(muscleGroups, timeLimit) {
+  // Ensure we are always working with an array
+  const groups = Array.isArray(muscleGroups) ? muscleGroups : [muscleGroups];
 
-  // 1. Load ALL available exercises from the pool at a baseline of 2 sets
+  let pool = [];
+  let secondarySet = new Set();
+
+  // Combine exercises and secondary muscles for all selected groups
+  groups.forEach((group) => {
+    if (workoutDatabase[group]) {
+      pool = [...pool, ...workoutDatabase[group]];
+    }
+    if (secondaryMuscleMap[group]) {
+      secondaryMuscleMap[group].split(", ").forEach((m) => secondarySet.add(m));
+    }
+  });
+
+  // Failsafe if nothing is selected
+  if (pool.length === 0) {
+    return { primary: "None", secondary: "None", exercises: [], totalTime: 0 };
+  }
+
+  const secondaryString =
+    Array.from(secondarySet).join(", ") || "Stabilizers Mapped";
+  const primaryString = groups.join(", ");
+
   let selectedExercises = pool.map((exercise) => {
     const vel = exercise.velocity || "1.0";
     const rep = exercise.reps || "10";
@@ -42,11 +62,7 @@ export function generateSmartWorkout(muscleGroup, timeLimit) {
     };
   });
 
-  // Calculate the initial baseline total time
   let currentTotal = selectedExercises.reduce((sum, ex) => sum + ex.estTime, 0);
-
-  // 🧠 TIME OPTIMIZER LOOP: If we are under the target time, dynamically add sets
-  // to exercises one by one until we get as close as possible without overshooting.
   let cycles = 0;
   let setsAdded = true;
 
@@ -55,7 +71,6 @@ export function generateSmartWorkout(muscleGroup, timeLimit) {
     for (let i = 0; i < selectedExercises.length; i++) {
       const currentSets = parseInt(selectedExercises[i].sets, 10);
 
-      // Limit exercises to a realistic maximum of 5 sets
       if (currentSets < 5) {
         const nextSets = currentSets + 1;
         const testTime = calculateExerciseTime(
@@ -65,7 +80,6 @@ export function generateSmartWorkout(muscleGroup, timeLimit) {
         );
         const timeDifference = testTime - selectedExercises[i].estTime;
 
-        // If adding this set keeps us under or exactly at the limit, commit it!
         if (currentTotal + timeDifference <= timeLimit) {
           selectedExercises[i].sets = String(nextSets);
           selectedExercises[i].estTime = testTime;
@@ -78,7 +92,7 @@ export function generateSmartWorkout(muscleGroup, timeLimit) {
   }
 
   return {
-    primary: muscleGroup,
+    primary: primaryString,
     secondary: secondaryString,
     exercises: selectedExercises,
     totalTime: currentTotal,

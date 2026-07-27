@@ -14,6 +14,7 @@
     "Segoe UI",
     Roboto,
     sans-serif;
+  overflow-y: auto; /* Allows the sidebar to scroll on small laptop screens */
 }
 
 .sidebar-title {
@@ -138,4 +139,82 @@
 
 .ai-generate-btn:hover {
   filter: brightness(1.05);
+}
+
+/* Multi-Select Styles */
+.multi-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.modern-select.active {
+  border-color: #ffb800;
+  box-shadow: 0 0 0 2px rgba(255, 184, 0, 0.2);
+}
+
+.multi-select-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+}
+
+.multi-select-group-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px 4px 16px;
+}
+
+.multi-select-item {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  transition: background 0.15s;
+}
+
+.multi-select-item:hover {
+  background: #f9fafb;
+}
+
+.checkbox-ui {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.multi-select-item.selected {
+  color: #111827;
+}
+
+.multi-select-item.selected .checkbox-ui {
+  background-color: #ffb800;
+  border-color: #ffb800;
+}
+
+.multi-select-item.selected .checkbox-ui::after {
+  content: "✓";
+  color: #000000;
+  font-size: 11px;
+  font-weight: 900;
 }

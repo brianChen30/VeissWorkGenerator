@@ -1,14 +1,46 @@
 // src/components/Sidebar.jsx
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Sidebar.css";
 
+const anteriorOptions = [
+  "Chest",
+  "Core",
+  "Shoulders",
+  "Biceps",
+  "Forearms",
+  "Quadriceps",
+];
+const posteriorOptions = [
+  "Trapezius",
+  "Lats",
+  "Lower Back",
+  "Triceps",
+  "Glutes",
+  "Hamstrings",
+  "Calves",
+];
+
 export default function Sidebar({
-  selectedMuscle,
-  onMuscleChange,
+  selectedMuscles,
+  onMuscleToggle,
   workoutTime,
   onTimeChange,
   onGenerateClick,
 }) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown if clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="sidebar-container">
       <h2 className="sidebar-title">Create Workout</h2>
@@ -18,32 +50,47 @@ export default function Sidebar({
 
       <div className="setup-step">
         <label className="step-label">
-          <span className="step-number">1</span> Muscle Group
+          <span className="step-number">1</span> Muscle Groups
         </label>
-        <div className="select-wrapper">
-          <select
-            value={selectedMuscle}
-            onChange={(e) => onMuscleChange(e.target.value)}
-            className="modern-select"
+
+        {/* Custom Multi-Select Dropdown */}
+        <div className="multi-select-container" ref={dropdownRef}>
+          <div
+            className={`modern-select ${isDropdownOpen ? "active" : ""}`}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <optgroup label="Anterior (Front View)">
-              <option value="Chest">Chest</option>
-              <option value="Core">Core / Abs</option>
-              <option value="Shoulders">Shoulders</option>
-              <option value="Biceps">Biceps</option>
-              <option value="Forearms">Forearms</option>
-              <option value="Quadriceps">Quadriceps</option>
-            </optgroup>
-            <optgroup label="Posterior (Back View)">
-              <option value="Trapezius">Trapezius (Traps)</option>
-              <option value="Lats">Lats / Back</option>
-              <option value="Lower Back">Lower Back</option>
-              <option value="Triceps">Triceps</option>
-              <option value="Glutes">Glutes</option>
-              <option value="Hamstrings">Hamstrings</option>
-              <option value="Calves">Calves</option>
-            </optgroup>
-          </select>
+            {selectedMuscles.length === 1
+              ? selectedMuscles[0]
+              : `${selectedMuscles.length} Groups Selected`}
+          </div>
+
+          {isDropdownOpen && (
+            <div className="multi-select-menu">
+              <div className="multi-select-group-title">Anterior (Front)</div>
+              {anteriorOptions.map((muscle) => (
+                <div
+                  key={muscle}
+                  className={`multi-select-item ${selectedMuscles.includes(muscle) ? "selected" : ""}`}
+                  onClick={() => onMuscleToggle(muscle)}
+                >
+                  <div className="checkbox-ui"></div>
+                  {muscle}
+                </div>
+              ))}
+
+              <div className="multi-select-group-title">Posterior (Back)</div>
+              {posteriorOptions.map((muscle) => (
+                <div
+                  key={muscle}
+                  className={`multi-select-item ${selectedMuscles.includes(muscle) ? "selected" : ""}`}
+                  onClick={() => onMuscleToggle(muscle)}
+                >
+                  <div className="checkbox-ui"></div>
+                  {muscle}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -64,7 +111,6 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* 🔗 Bound directly to the dedicated generator algorithm controller */}
       <button className="ai-generate-btn" onClick={onGenerateClick}>
         ✨ Generate Workout
       </button>

@@ -1,3 +1,4 @@
+// src/WorkoutDashboard.jsx
 import React from "react";
 import Sidebar from "./components/Sidebar";
 import AnatomyPanel from "./components/AnatomyPanel";
@@ -7,12 +8,12 @@ import "./WorkoutDashboard.css";
 
 export default function WorkoutDashboard() {
   const {
-    selectedMuscle,
+    selectedMuscles,
     workoutTime,
     setWorkoutTime,
     displayedWorkout,
     savedHistory,
-    handleMuscleChange,
+    handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,
     handleSaveActiveWorkout,
@@ -22,8 +23,8 @@ export default function WorkoutDashboard() {
   return (
     <div className="dashboard-wrapper">
       <Sidebar
-        selectedMuscle={selectedMuscle}
-        onMuscleChange={handleMuscleChange}
+        selectedMuscles={selectedMuscles}
+        onMuscleToggle={handleMuscleToggle}
         workoutTime={workoutTime}
         onTimeChange={setWorkoutTime}
         onGenerateClick={handleForceGenerate}
@@ -31,8 +32,8 @@ export default function WorkoutDashboard() {
 
       <div className="dashboard-content-grid">
         <AnatomyPanel
-          selectedMuscle={selectedMuscle}
-          onBodyPartClick={handleMuscleChange}
+          selectedMuscles={selectedMuscles}
+          onBodyPartClick={handleMuscleToggle}
           displayedWorkout={displayedWorkout}
         />
 

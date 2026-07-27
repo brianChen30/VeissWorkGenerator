@@ -4,7 +4,7 @@ import Body from "react-muscle-highlighter";
 import "./AnatomyPanel.css";
 
 export default function AnatomyPanel({
-  selectedMuscle,
+  selectedMuscles,
   onBodyPartClick,
   displayedWorkout,
 }) {
@@ -52,21 +52,33 @@ export default function AnatomyPanel({
     "Calves",
   ];
 
+  // Auto-spin logic: If they select more back muscles than front muscles, spin it around
   useEffect(() => {
-    if (posteriorMuscles.includes(selectedMuscle)) {
+    const posteriorCount = selectedMuscles.filter((m) =>
+      posteriorMuscles.includes(m),
+    ).length;
+    const anteriorCount = selectedMuscles.length - posteriorCount;
+
+    if (posteriorCount > anteriorCount) {
       setViewSide("back");
     } else {
       setViewSide("front");
     }
-  }, [selectedMuscle]);
+  }, [selectedMuscles]);
 
   const handleComponentClick = (part) => {
     if (!part?.slug) return;
     const coreAppName = slugToMuscle[part.slug];
     if (coreAppName) {
-      onBodyPartClick(coreAppName);
+      onBodyPartClick(coreAppName); // Now acts as a toggle click!
     }
   };
+
+  // Map the array of muscles into the data format the library expects
+  const highlightData = selectedMuscles.map((muscle) => ({
+    slug: muscleToSlug[muscle] || "chest",
+    color: "#FFB800",
+  }));
 
   return (
     <div className="anatomy-panel">
@@ -87,9 +99,7 @@ export default function AnatomyPanel({
 
       <div className="anatomy-container">
         <Body
-          data={[
-            { slug: muscleToSlug[selectedMuscle] || "chest", color: "#FFB800" },
-          ]}
+          data={highlightData}
           onBodyPartPress={handleComponentClick}
           gender="male"
           side={viewSide}
@@ -102,7 +112,7 @@ export default function AnatomyPanel({
       <div className="muscle-info-card">
         <p className="primary-label">● Target Muscle Group</p>
         <h4 className="muscle-title-text">
-          {displayedWorkout?.primary || selectedMuscle}
+          {displayedWorkout?.primary || selectedMuscles.join(", ")}
         </h4>
         <p className="secondary-label">Secondary Activation</p>
         <p className="muscle-secondary-text">

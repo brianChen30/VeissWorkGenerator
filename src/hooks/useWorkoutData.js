@@ -1,3 +1,4 @@
+// src/hooks/useWorkoutData.js
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import {
@@ -6,10 +7,10 @@ import {
 } from "../utils/workoutGenerator";
 
 export function useWorkoutData() {
-  const [selectedMuscle, setSelectedMuscle] = useState("Chest");
+  const [selectedMuscles, setSelectedMuscles] = useState(["Chest"]); // Now an array
   const [workoutTime, setWorkoutTime] = useState(60);
   const [displayedWorkout, setDisplayedWorkout] = useState(() =>
-    generateSmartWorkout("Chest", 60),
+    generateSmartWorkout(["Chest"], 60),
   );
   const [savedHistory, setSavedHistory] = useState([]);
 
@@ -44,13 +45,28 @@ export function useWorkoutData() {
     fetchLogs();
   }, []);
 
-  const handleMuscleChange = (targetMuscle) => {
-    setSelectedMuscle(targetMuscle);
-    setDisplayedWorkout(generateSmartWorkout(targetMuscle, workoutTime));
+  // Toggle function for multi-select
+  const handleMuscleToggle = (muscle) => {
+    setSelectedMuscles((prev) => {
+      let newSelection;
+      if (prev.includes(muscle)) {
+        // Remove if already selected
+        newSelection = prev.filter((m) => m !== muscle);
+      } else {
+        // Add if not selected
+        newSelection = [...prev, muscle];
+      }
+
+      // Prevent user from unselecting everything (fallback to Chest)
+      if (newSelection.length === 0) newSelection = ["Chest"];
+
+      setDisplayedWorkout(generateSmartWorkout(newSelection, workoutTime));
+      return newSelection;
+    });
   };
 
   const handleForceGenerate = () => {
-    setDisplayedWorkout(generateSmartWorkout(selectedMuscle, workoutTime));
+    setDisplayedWorkout(generateSmartWorkout(selectedMuscles, workoutTime));
   };
 
   const handleUpdateExercise = (index, field, newValue) => {
@@ -127,12 +143,12 @@ export function useWorkoutData() {
   };
 
   return {
-    selectedMuscle,
+    selectedMuscles,
     workoutTime,
     setWorkoutTime,
     displayedWorkout,
     savedHistory,
-    handleMuscleChange,
+    handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,
     handleSaveActiveWorkout,

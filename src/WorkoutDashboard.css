@@ -1,9 +1,10 @@
 /* src/WorkoutDashboard.css */
 .dashboard-wrapper {
   display: flex;
-  min-height: 100vh;
-  background-color: #f3f4f6; /* Clean light grey canvas */
-  color: #111827; /* Dark grey/black text */
+  height: 100vh; /* Locks height to exactly the screen size */
+  overflow: hidden; /* Prevents the whole page from scrolling */
+  background-color: #f3f4f6;
+  color: #111827;
   font-family:
     system-ui,
     -apple-system,
@@ -16,6 +17,7 @@
   gap: 24px;
   padding: 24px;
   box-sizing: border-box;
+  overflow: hidden; /* Passes the height limit down to the panels */
 }
 
 /* Light mode scrollbar */
