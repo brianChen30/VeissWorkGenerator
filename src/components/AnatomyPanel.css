@@ -1,21 +1,22 @@
 /* src/components/AnatomyPanel.css */
 .anatomy-panel {
   flex: 1.2;
-  background-color: #14151f;
+  background-color: #ffffff;
   padding: 24px;
-  border-radius: 16px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid #1e2235;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .view-toggle-tabs {
   display: flex;
-  background-color: #0c0d12;
+  background-color: #f3f4f6;
   padding: 4px;
   border-radius: 8px;
-  border: 1px solid #1c1f30;
+  border: 1px solid #e5e7eb;
   margin-bottom: 15px;
 }
 
@@ -26,33 +27,32 @@
   color: #6b7280;
   padding: 10px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tab-btn:hover {
-  color: #ffffff;
+  color: #111827;
 }
 
 .tab-btn.active-tab {
-  background-color: #1c1f30;
-  color: #a855f7;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: #ffffff;
+  color: #111827;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .anatomy-container {
-  background-color: #0c0d12;
-  border: 1px solid #1c1f30;
-  border-radius: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
   padding: 20px;
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
 }
 
-/* TARGET THE PACKAGE PATH ELEMENTS DIRECTLY FOR THE PURPLE GLOW */
 .anatomy-container svg path {
   cursor: pointer;
   transition:
@@ -61,40 +61,47 @@
 }
 
 .anatomy-container svg path:hover {
-  fill: #3b3f5c !important;
+  fill: #d1d5db !important;
 }
 
-/* Glow rule matching the reference dashboard */
-.anatomy-container svg path[fill="#a855f7"] {
-  filter: drop-shadow(0px 0px 8px rgba(168, 85, 247, 0.85)) !important;
+.anatomy-container svg path[fill="#FFB800"] {
+  filter: drop-shadow(0px 0px 6px rgba(255, 184, 0, 0.4)) !important;
 }
 
 .muscle-info-card {
-  background-color: #11131e;
+  background-color: #f9fafb;
   padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #1c1f30;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
 }
 
 .primary-label {
-  color: #a855f7;
-  font-weight: bold;
+  color: #ffb800;
+  font-weight: 800;
   margin: 0 0 4px 0;
-  font-size: 12px;
-}
-.muscle-title-text {
-  color: #fff;
-  margin: 0 0 10px 0;
-  font-size: 15px;
-  font-weight: 600;
-}
-.secondary-label {
-  color: #6c7387;
   font-size: 11px;
-  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
+
+.muscle-title-text {
+  color: #111827;
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.secondary-label {
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+
 .muscle-secondary-text {
-  color: #9ca3af;
+  color: #374151;
   margin: 0;
   font-size: 13px;
+  font-weight: 500;
 }

@@ -1,9 +1,9 @@
 /* src/components/Sidebar.css */
 .sidebar-container {
-  flex: 0 0 320px; /* Locks the width exactly like your target design */
-  background-color: #0c0d12;
+  flex: 0 0 320px;
+  background-color: #ffffff; /* White surface */
   padding: 24px;
-  border-right: 1px solid #1c1f30;
+  border-right: 1px solid #e5e7eb; /* Subtle line */
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -17,15 +17,16 @@
 }
 
 .sidebar-title {
-  color: #ffffff;
+  color: #111827;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .sidebar-subtitle {
   color: #6b7280;
-  font-size: 13px;
+  font-size: 14px;
   margin: -12px 0 0 0;
   line-height: 1.4;
 }
@@ -37,17 +38,17 @@
 }
 
 .step-label {
-  color: #ffffff;
+  color: #374151;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .step-number {
-  background-color: #6366f1;
-  color: #ffffff;
+  background-color: #ffb800;
+  color: #000000;
   font-size: 11px;
   width: 18px;
   height: 18px;
@@ -58,7 +59,6 @@
   font-weight: bold;
 }
 
-/* ⚡ Beautiful Custom Dropdown Styling */
 .select-wrapper {
   position: relative;
   width: 100%;
@@ -66,15 +66,16 @@
 
 .modern-select {
   width: 100%;
-  background-color: #14151f;
-  color: #ffffff;
-  border: 1px solid #23273a;
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   outline: none;
   cursor: pointer;
-  appearance: none; /* Removes the default ugly Windows browser arrow arrow */
+  appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 16px center;
@@ -86,11 +87,10 @@
 
 .modern-select:focus,
 .modern-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  border-color: #ffb800;
+  box-shadow: 0 0 0 2px rgba(255, 184, 0, 0.2);
 }
 
-/* ⚡ Beautiful Time Input Field Styling */
 .time-input-wrapper {
   position: relative;
   display: flex;
@@ -99,12 +99,13 @@
 
 .modern-input {
   width: 100%;
-  background-color: #14151f;
-  color: #ffffff;
-  border: 1px solid #23273a;
-  padding: 12px 60px 12px 16px; /* Extra padding on right to clear the unit text */
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  padding: 12px 60px 12px 16px;
   border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   outline: none;
 }
 
@@ -116,14 +117,13 @@
   pointer-events: none;
 }
 
-/* 🔥 Premium Glowing AI Button Action Trigger */
 .ai-generate-btn {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #ffffff;
+  background: #ffb800; /* Solid gold to match the Veiss "Send programming" button */
+  color: #000000;
   border: none;
   padding: 14px;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   display: flex;
@@ -137,32 +137,5 @@
 }
 
 .ai-generate-btn:hover {
-  filter: brightness(1.1);
-  box-shadow: 0px 0px 12px rgba(99, 102, 241, 0.4);
-}
-
-/* Bottom Explanatory Informational Card Widget */
-.ai-badge-card {
-  background-color: #11131e;
-  border: 1px solid #1c1f30;
-  border-radius: 10px;
-  padding: 16px;
-  margin-top: auto; /* Pushes the widget neatly to the bottom boundary edge */
-}
-
-.ai-badge-card h4 {
-  color: #ffffff;
-  margin: 0 0 6px 0;
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.ai-badge-card p {
-  color: #4b526d;
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 0;
+  filter: brightness(1.05);
 }

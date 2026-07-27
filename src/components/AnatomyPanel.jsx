@@ -10,7 +10,6 @@ export default function AnatomyPanel({
 }) {
   const [viewSide, setViewSide] = useState("front");
 
-  // Direct matching to the open-source library's hidden asset IDs
   const muscleToSlug = {
     Chest: "chest",
     Core: "abs",
@@ -53,7 +52,6 @@ export default function AnatomyPanel({
     "Calves",
   ];
 
-  // Automatically spin the model around if a back muscle is selected from the dropdown
   useEffect(() => {
     if (posteriorMuscles.includes(selectedMuscle)) {
       setViewSide("back");
@@ -62,7 +60,6 @@ export default function AnatomyPanel({
     }
   }, [selectedMuscle]);
 
-  // Click handler matching the library's signature structure
   const handleComponentClick = (part) => {
     if (!part?.slug) return;
     const coreAppName = slugToMuscle[part.slug];
@@ -89,16 +86,15 @@ export default function AnatomyPanel({
       </div>
 
       <div className="anatomy-container">
-        {/* 🚨 THE UPDATED INTERACTIVE LAYER */}
         <Body
           data={[
-            { slug: muscleToSlug[selectedMuscle] || "chest", color: "#a855f7" },
+            { slug: muscleToSlug[selectedMuscle] || "chest", color: "#FFB800" },
           ]}
-          onBodyPartPress={handleComponentClick} // 🛡️ CRITICAL FIX: The library listens strictly to onBodyPartPress!
+          onBodyPartPress={handleComponentClick}
           gender="male"
           side={viewSide}
-          defaultFill="#222538"
-          defaultStroke="#0c0d12"
+          defaultFill="#e5e7eb"
+          defaultStroke="#ffffff"
           defaultStrokeWidth={1.5}
         />
       </div>
