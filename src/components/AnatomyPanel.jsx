@@ -8,6 +8,8 @@ export default function AnatomyPanel({
   selectedMuscles,
   onBodyPartClick,
   displayedWorkout,
+  hoveredMuscle,
+  onMuscleHover,
 }) {
   const [viewSide, setViewSide] = useState("front");
 
@@ -66,17 +68,44 @@ export default function AnatomyPanel({
 
   const handleComponentClick = (part) => {
     if (!part?.slug) return;
-
     const coreAppName = slugToMuscle[part.slug];
     if (coreAppName) {
       onBodyPartClick(coreAppName);
     }
   };
 
-  const highlightData = selectedMuscles.flatMap((muscle) => {
+  // Build the array of highlights for the 3D model
+  let highlightData = [];
+
+  // 1. Paint all selected muscles Gold (#FFB800)
+  selectedMuscles.forEach((muscle) => {
     const slugs = muscleToSlug[muscle] || [];
-    return slugs.map((slug) => ({ slug, color: "#FFB800" }));
+    slugs.forEach((slug) => {
+      highlightData.push({ slug, color: "#FFB800" });
+    });
   });
+
+  // 2. If a user is hovering over a specific row, highlight that target & its secondaries in Orange (#FF5722)
+  if (hoveredMuscle) {
+    // Highlight hovered target
+    const targetSlugs = muscleToSlug[hoveredMuscle] || [];
+    targetSlugs.forEach((slug) => {
+      highlightData.push({ slug, color: "#FF5722" });
+    });
+
+    // Highlight secondary activation items for that target
+    const secondaries = secondaryMuscleMap[hoveredMuscle];
+    if (secondaries && secondaries !== "None") {
+      secondaries.split(", ").forEach((sec) => {
+        // Clean text mapping helper in case names differ slightly
+        const secClean = sec.trim();
+        const secSlugs = muscleToSlug[secClean] || [];
+        secSlugs.forEach((slug) => {
+          highlightData.push({ slug, color: "#FF5722" });
+        });
+      });
+    }
+  }
 
   return (
     <div className="anatomy-panel">
@@ -108,20 +137,11 @@ export default function AnatomyPanel({
       </div>
 
       <div className="muscle-info-card">
-        <p className="primary-label">● Target Muscle Group</p>
-        <div className="muscle-tag-cloud">
-          {selectedMuscles.length === 0 ? (
-            <span className="empty-tag">None Selected</span>
-          ) : (
-            selectedMuscles.map((m) => (
-              <span key={m} className="muscle-tag primary-tag">
-                {m}
-              </span>
-            ))
-          )}
+        <div className="mapping-table-header">
+          <p className="primary-label">● Target Group</p>
+          <p className="secondary-label">Secondary Activation</p>
         </div>
 
-        <p className="secondary-label">Secondary Activation Map</p>
         <div className="secondary-mapping-list">
           {selectedMuscles.length === 0 ? (
             <span className="empty-tag">
@@ -130,19 +150,31 @@ export default function AnatomyPanel({
           ) : (
             selectedMuscles.map((muscle) => {
               const secondaries = secondaryMuscleMap[muscle];
-              // Skip if there are no secondary muscles mapped
-              if (!secondaries || secondaries === "None") return null;
+              const isHovered = hoveredMuscle === muscle;
 
               return (
-                <div key={muscle} className="mapping-row">
-                  <div className="mapping-source">{muscle}</div>
-                  <div className="mapping-arrow">↳</div>
+                <div
+                  key={muscle}
+                  className={`mapping-row ${isHovered ? "row-hovered" : ""}`}
+                  onMouseEnter={() => onMuscleHover(muscle)}
+                  onMouseLeave={() => onMuscleHover(null)}
+                >
+                  <div>
+                    <span className="muscle-tag primary-tag mapping-source">
+                      {muscle}
+                    </span>
+                  </div>
+
                   <div className="mapping-targets">
-                    {secondaries.split(", ").map((sec, i) => (
-                      <span key={i} className="muscle-tag secondary-tag">
-                        {sec}
-                      </span>
-                    ))}
+                    {!secondaries || secondaries === "None" ? (
+                      <span className="empty-tag">-</span>
+                    ) : (
+                      secondaries.split(", ").map((sec, i) => (
+                        <span key={i} className="muscle-tag secondary-tag">
+                          {sec}
+                        </span>
+                      ))
+                    )}
                   </div>
                 </div>
               );

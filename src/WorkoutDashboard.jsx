@@ -13,6 +13,8 @@ export default function WorkoutDashboard() {
     setWorkoutTime,
     displayedWorkout,
     savedHistory,
+    hoveredMuscle,
+    setHoveredMuscle,
     handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,
@@ -35,6 +37,8 @@ export default function WorkoutDashboard() {
           selectedMuscles={selectedMuscles}
           onBodyPartClick={handleMuscleToggle}
           displayedWorkout={displayedWorkout}
+          hoveredMuscle={hoveredMuscle}
+          onMuscleHover={setHoveredMuscle}
         />
 
         <WorkoutPanel

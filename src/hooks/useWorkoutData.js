@@ -7,11 +7,10 @@ import {
 } from "../utils/workoutGenerator";
 
 export function useWorkoutData() {
-  // Start completely empty
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [workoutTime, setWorkoutTime] = useState(60);
+  const [hoveredMuscle, setHoveredMuscle] = useState(null); // 👈 Track current hover state
 
-  // Start with a blank placeholder workout
   const [displayedWorkout, setDisplayedWorkout] = useState({
     primary: "None Selected",
     secondary: "-",
@@ -61,7 +60,6 @@ export function useWorkoutData() {
         newSelection = [...prev, muscle];
       }
 
-      // If the user unchecks everything, clear the workout panel
       if (newSelection.length === 0) {
         setDisplayedWorkout({
           primary: "None Selected",
@@ -168,6 +166,8 @@ export function useWorkoutData() {
     setWorkoutTime,
     displayedWorkout,
     savedHistory,
+    hoveredMuscle, // 👈 Expose
+    setHoveredMuscle, // 👈 Expose
     handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,

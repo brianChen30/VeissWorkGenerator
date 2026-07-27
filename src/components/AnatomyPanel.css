@@ -70,34 +70,46 @@
   filter: drop-shadow(0px 0px 6px rgba(255, 184, 0, 0.4)) !important;
 }
 
-/* --- MUSCLE INFO CARD & TAG CLOUD STYLES --- */
+/* Vibrant Orange glow effect for hovered body parts */
+.anatomy-container svg path[fill="#FF5722"] {
+  filter: drop-shadow(0px 0px 8px rgba(255, 87, 34, 0.7)) !important;
+}
+
+/* --- MUSCLE INFO CARD & 2-COLUMN GRID STYLES --- */
 
 .muscle-info-card {
   background-color: #f9fafb;
-  padding: 16px 16px 4px 16px;
+  padding: 16px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
-  max-height: 220px;
+  max-height: 250px;
   overflow-y: auto;
 }
 
 .muscle-info-card::-webkit-scrollbar {
   width: 4px;
 }
-
 .muscle-info-card::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .muscle-info-card::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 4px;
 }
 
+.mapping-table-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
 .primary-label {
   color: #ffb800;
   font-weight: 800;
-  margin: 0 0 10px 0;
+  margin: 0;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -107,15 +119,52 @@
   color: #6b7280;
   font-size: 11px;
   font-weight: 600;
-  margin: 0 0 10px 0;
+  margin: 0;
   text-transform: uppercase;
 }
 
-.muscle-tag-cloud {
+.secondary-mapping-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mapping-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+/* Interactive hover state for the rows */
+.mapping-row:hover,
+.mapping-row.row-hovered {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.mapping-row:hover .mapping-source {
+  background-color: #ff5722;
+  color: #ffffff;
+  border-color: #ff5722;
+}
+
+.mapping-source {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.mapping-targets {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 20px;
 }
 
 .muscle-tag {
@@ -145,44 +194,4 @@
   color: #9ca3af;
   font-size: 13px;
   font-style: italic;
-  margin-bottom: 12px;
-}
-
-/* --- CORRELATION MAPPING LAYOUT STYLES --- */
-
-.secondary-mapping-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.mapping-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.mapping-source {
-  font-size: 11px;
-  font-weight: 800;
-  color: #374151;
-  background-color: #e5e7eb;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #d1d5db;
-  white-space: nowrap;
-}
-
-.mapping-arrow {
-  color: #9ca3af;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 22px;
-}
-
-.mapping-targets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
 }
