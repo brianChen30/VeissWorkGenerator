@@ -1,6 +1,7 @@
 // src/components/AnatomyPanel.jsx
 import React, { useState } from "react";
 import Body from "react-muscle-highlighter";
+import { secondaryMuscleMap } from "../workoutDatabase";
 import "./AnatomyPanel.css";
 
 export default function AnatomyPanel({
@@ -108,15 +109,46 @@ export default function AnatomyPanel({
 
       <div className="muscle-info-card">
         <p className="primary-label">● Target Muscle Group</p>
-        <h4 className="muscle-title-text">
-          {displayedWorkout?.primary === "None" || selectedMuscles.length === 0
-            ? "None Selected"
-            : displayedWorkout?.primary || selectedMuscles.join(", ")}
-        </h4>
-        <p className="secondary-label">Secondary Activation</p>
-        <p className="muscle-secondary-text">
-          {displayedWorkout?.secondary || "-"}
-        </p>
+        <div className="muscle-tag-cloud">
+          {selectedMuscles.length === 0 ? (
+            <span className="empty-tag">None Selected</span>
+          ) : (
+            selectedMuscles.map((m) => (
+              <span key={m} className="muscle-tag primary-tag">
+                {m}
+              </span>
+            ))
+          )}
+        </div>
+
+        <p className="secondary-label">Secondary Activation Map</p>
+        <div className="secondary-mapping-list">
+          {selectedMuscles.length === 0 ? (
+            <span className="empty-tag">
+              Select groups above to see correlations
+            </span>
+          ) : (
+            selectedMuscles.map((muscle) => {
+              const secondaries = secondaryMuscleMap[muscle];
+              // Skip if there are no secondary muscles mapped
+              if (!secondaries || secondaries === "None") return null;
+
+              return (
+                <div key={muscle} className="mapping-row">
+                  <div className="mapping-source">{muscle}</div>
+                  <div className="mapping-arrow">↳</div>
+                  <div className="mapping-targets">
+                    {secondaries.split(", ").map((sec, i) => (
+                      <span key={i} className="muscle-tag secondary-tag">
+                        {sec}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

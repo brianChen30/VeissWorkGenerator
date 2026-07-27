@@ -1,4 +1,5 @@
 /* src/components/AnatomyPanel.css */
+
 .anatomy-panel {
   flex: 1.2;
   background-color: #ffffff;
@@ -64,44 +65,124 @@
   fill: #d1d5db !important;
 }
 
+/* Gold glow effect for selected body parts */
 .anatomy-container svg path[fill="#FFB800"] {
   filter: drop-shadow(0px 0px 6px rgba(255, 184, 0, 0.4)) !important;
 }
 
+/* --- MUSCLE INFO CARD & TAG CLOUD STYLES --- */
+
 .muscle-info-card {
   background-color: #f9fafb;
-  padding: 16px;
+  padding: 16px 16px 4px 16px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.muscle-info-card::-webkit-scrollbar {
+  width: 4px;
+}
+
+.muscle-info-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.muscle-info-card::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
 }
 
 .primary-label {
   color: #ffb800;
   font-weight: 800;
-  margin: 0 0 4px 0;
+  margin: 0 0 10px 0;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-}
-
-.muscle-title-text {
-  color: #111827;
-  margin: 0 0 10px 0;
-  font-size: 16px;
-  font-weight: 700;
 }
 
 .secondary-label {
   color: #6b7280;
   font-size: 11px;
   font-weight: 600;
-  margin: 0 0 4px 0;
+  margin: 0 0 10px 0;
   text-transform: uppercase;
 }
 
-.muscle-secondary-text {
-  color: #374151;
-  margin: 0;
+.muscle-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.muscle-tag {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.primary-tag {
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.secondary-tag {
+  background-color: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.empty-tag {
+  color: #9ca3af;
   font-size: 13px;
-  font-weight: 500;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+/* --- CORRELATION MAPPING LAYOUT STYLES --- */
+
+.secondary-mapping-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mapping-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.mapping-source {
+  font-size: 11px;
+  font-weight: 800;
+  color: #374151;
+  background-color: #e5e7eb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  white-space: nowrap;
+}
+
+.mapping-arrow {
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 22px;
+}
+
+.mapping-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
