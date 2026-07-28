@@ -15,6 +15,7 @@ export default function WorkoutDashboard() {
     savedHistory,
     hoveredMuscle,
     setHoveredMuscle,
+    isGenerating, // 👈 Destructured the new loading state from your hook
     handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,
@@ -30,6 +31,7 @@ export default function WorkoutDashboard() {
         workoutTime={workoutTime}
         onTimeChange={setWorkoutTime}
         onGenerateClick={handleForceGenerate}
+        isGenerating={isGenerating} // 👈 Passed it down to the Sidebar component
       />
 
       <div className="dashboard-content-grid">

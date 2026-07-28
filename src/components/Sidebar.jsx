@@ -37,6 +37,7 @@ export default function Sidebar({
   workoutTime,
   onTimeChange,
   onGenerateClick,
+  isGenerating, // 👈 Added the new loading state prop
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -78,7 +79,6 @@ export default function Sidebar({
           {isDropdownOpen && (
             <div className="multi-select-menu">
               <div className="multi-select-group-title">Anterior (Front)</div>
-              {/* NEW: Pill Grid Container */}
               <div className="muscle-pills-container">
                 {anteriorOptions.map((muscle) => (
                   <div
@@ -92,7 +92,6 @@ export default function Sidebar({
               </div>
 
               <div className="multi-select-group-title">Posterior (Back)</div>
-              {/* NEW: Pill Grid Container */}
               <div className="muscle-pills-container">
                 {posteriorOptions.map((muscle) => (
                   <div
@@ -126,8 +125,18 @@ export default function Sidebar({
         </div>
       </div>
 
-      <button className="ai-generate-btn" onClick={onGenerateClick}>
-        ✨ Generate Workout
+      {/* 🚨 UPDATED BUTTON: Reacts to the isGenerating state */}
+      <button
+        className="ai-generate-btn"
+        onClick={onGenerateClick}
+        disabled={isGenerating}
+        style={{
+          opacity: isGenerating ? 0.7 : 1,
+          cursor: isGenerating ? "not-allowed" : "pointer",
+          pointerEvents: isGenerating ? "none" : "auto",
+        }}
+      >
+        {isGenerating ? "🧠 AI is Thinking..." : "✨ Generate Workout"}
       </button>
     </div>
   );
