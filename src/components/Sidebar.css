@@ -207,3 +207,30 @@
   color: #000000;
   border-color: #ffb800;
 }
+
+/* Add to the BOTTOM of src/components/Sidebar.css */
+
+.ai-badge-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: auto; /* Automatically pushes this card to the very bottom of the sidebar */
+}
+
+.ai-badge-card h4 {
+  color: #111827;
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-badge-card p {
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}

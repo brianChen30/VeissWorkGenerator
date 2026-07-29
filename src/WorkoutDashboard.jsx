@@ -15,10 +15,11 @@ export default function WorkoutDashboard() {
     savedHistory,
     hoveredMuscle,
     setHoveredMuscle,
-    isGenerating, // 👈 Destructured the new loading state from your hook
+    isGenerating,
     handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,
+    handleDeleteExercise, // 👈 Destructure new function
     handleSaveActiveWorkout,
     handleClearHistory,
   } = useWorkoutData();
@@ -31,7 +32,7 @@ export default function WorkoutDashboard() {
         workoutTime={workoutTime}
         onTimeChange={setWorkoutTime}
         onGenerateClick={handleForceGenerate}
-        isGenerating={isGenerating} // 👈 Passed it down to the Sidebar component
+        isGenerating={isGenerating}
       />
 
       <div className="dashboard-content-grid">
@@ -46,6 +47,7 @@ export default function WorkoutDashboard() {
         <WorkoutPanel
           displayedWorkout={displayedWorkout}
           onUpdateExercise={handleUpdateExercise}
+          onDeleteExercise={handleDeleteExercise} // 👈 Pass it down
           onSaveWorkout={handleSaveActiveWorkout}
           historyLogs={savedHistory}
           onClearHistory={handleClearHistory}

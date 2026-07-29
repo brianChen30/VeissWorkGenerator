@@ -302,3 +302,31 @@
   font-weight: 600;
   color: #ffb800;
 }
+
+/* Add to the BOTTOM of src/components/WorkoutPanel.css */
+
+.exercise-card {
+  /* Added padding so the metrics don't bump into the absolute delete button */
+  padding-right: 36px;
+}
+
+.delete-exercise-btn {
+  position: absolute;
+  top: 16px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.delete-exercise-btn:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}

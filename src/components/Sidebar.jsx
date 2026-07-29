@@ -37,7 +37,7 @@ export default function Sidebar({
   workoutTime,
   onTimeChange,
   onGenerateClick,
-  isGenerating, // 👈 Added the new loading state prop
+  isGenerating,
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -125,7 +125,6 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* 🚨 UPDATED BUTTON: Reacts to the isGenerating state */}
       <button
         className="ai-generate-btn"
         onClick={onGenerateClick}
@@ -138,6 +137,15 @@ export default function Sidebar({
       >
         {isGenerating ? "🧠 AI is Thinking..." : "✨ Generate Workout"}
       </button>
+
+      {/* 🤖 NEW: AI Powered Informational Badge placed at the bottom */}
+      <div className="ai-badge-card">
+        <h4>✨ AI Powered</h4>
+        <p>
+          Our AI will create a personalized workout that targets your selected
+          muscle groups within the time frame you choose.
+        </p>
+      </div>
     </div>
   );
 }

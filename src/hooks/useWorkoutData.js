@@ -1,7 +1,6 @@
 // src/hooks/useWorkoutData.js
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-// 🚨 Import your new AI generator instead!
 import { generateSmartWorkoutAI } from "../utils/aiGenerator";
 import { calculateExerciseTime } from "../utils/workoutGenerator";
 
@@ -9,8 +8,6 @@ export function useWorkoutData() {
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [workoutTime, setWorkoutTime] = useState(60);
   const [hoveredMuscle, setHoveredMuscle] = useState(null);
-
-  // 🚨 New loading state for the AI
   const [isGenerating, setIsGenerating] = useState(false);
 
   const [displayedWorkout, setDisplayedWorkout] = useState({
@@ -22,7 +19,6 @@ export function useWorkoutData() {
 
   const [savedHistory, setSavedHistory] = useState([]);
 
-  // (Keep your existing fetchLogs useEffect here exactly as it was)
   useEffect(() => {
     async function fetchLogs() {
       const { data, error } = await supabase
@@ -65,18 +61,15 @@ export function useWorkoutData() {
     });
   };
 
-  // 🚨 Updated to use the AI!
   const handleForceGenerate = async () => {
     if (selectedMuscles.length === 0) {
       alert("Please select at least one muscle group to generate a workout.");
       return;
     }
 
-    // Turn on the loading spinner
     setIsGenerating(true);
 
     try {
-      // Call Groq AI
       const aiWorkout = await generateSmartWorkoutAI(
         selectedMuscles,
         workoutTime,
@@ -87,7 +80,6 @@ export function useWorkoutData() {
     } catch (error) {
       alert("Failed to reach AI. Please try again.");
     } finally {
-      // Turn off the loading spinner
       setIsGenerating(false);
     }
   };
@@ -101,11 +93,13 @@ export function useWorkoutData() {
         ...updatedExercises[index],
         [field]: newValue,
       };
+
       updatedExercises[index].estTime = calculateExerciseTime(
         updatedExercises[index].sets,
         updatedExercises[index].reps,
         updatedExercises[index].velocity,
       );
+
       const freshTotalMinutes = updatedExercises.reduce(
         (sum, item) => sum + item.estTime,
         0,
@@ -119,11 +113,74 @@ export function useWorkoutData() {
     });
   };
 
-  const handleSaveActiveWorkout = async () => {
-    /* unchanged */
+  // 🗑️ NEW: Deletes a specific exercise from the list
+  const handleDeleteExercise = (indexToDelete) => {
+    setDisplayedWorkout((prevWorkout) => {
+      if (!prevWorkout || !prevWorkout.exercises) return prevWorkout;
+
+      const updatedExercises = prevWorkout.exercises.filter(
+        (_, index) => index !== indexToDelete,
+      );
+      const freshTotalMinutes = updatedExercises.reduce(
+        (sum, item) => sum + item.estTime,
+        0,
+      );
+      setWorkoutTime(freshTotalMinutes);
+
+      return {
+        ...prevWorkout,
+        exercises: updatedExercises,
+        totalTime: freshTotalMinutes,
+      };
+    });
   };
+
+  // 💾 RESTORED: Fully functional Supabase save logic
+  const handleSaveActiveWorkout = async () => {
+    if (!displayedWorkout || displayedWorkout.exercises.length === 0) {
+      alert("No workout generated to save.");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("workout_history")
+      .insert([
+        {
+          primary_muscle: displayedWorkout.primary,
+          total_time: displayedWorkout.totalTime,
+          exercises: displayedWorkout.exercises,
+        },
+      ])
+      .select();
+
+    if (error) {
+      alert("Failed to save to cloud: " + error.message);
+    } else if (data?.[0]) {
+      const newRow = data[0];
+      const dateObj = new Date(newRow.created_at);
+
+      setSavedHistory((prev) => [
+        {
+          id: newRow.id,
+          timestamp: `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
+          primary: newRow.primary_muscle,
+          totalTime: newRow.total_time,
+          exercisesCount: newRow.exercises.length,
+          exercises: newRow.exercises,
+        },
+        ...prev,
+      ]);
+    }
+  };
+
+  // 🗑️ RESTORED: Fully functional Supabase clear logic
   const handleClearHistory = async () => {
-    /* unchanged */
+    if (
+      window.confirm("Are you sure you want to clear all cloud history logs?")
+    ) {
+      await supabase.from("workout_history").delete().neq("id", 0);
+      setSavedHistory([]);
+    }
   };
 
   return {
@@ -134,10 +191,11 @@ export function useWorkoutData() {
     savedHistory,
     hoveredMuscle,
     setHoveredMuscle,
-    isGenerating, // 👈 Export the new loading state
+    isGenerating,
     handleMuscleToggle,
     handleForceGenerate,
     handleUpdateExercise,
+    handleDeleteExercise, // 👈 Export new function
     handleSaveActiveWorkout,
     handleClearHistory,
   };
