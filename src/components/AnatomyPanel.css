@@ -1,5 +1,4 @@
 /* src/components/AnatomyPanel.css */
-
 .anatomy-panel {
   flex: 1.2;
   background-color: #ffffff;
@@ -76,7 +75,6 @@
 }
 
 /* --- MUSCLE INFO CARD & 2-COLUMN GRID STYLES --- */
-
 .muscle-info-card {
   background-color: #f9fafb;
   padding: 16px;

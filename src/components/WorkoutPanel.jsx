@@ -1,5 +1,6 @@
 // src/components/WorkoutPanel.jsx
 import React, { useState, useEffect, useRef } from "react";
+import { getExerciseImage } from "../utils/exerciseImages";
 import "./WorkoutPanel.css";
 
 // Reusable combobox logic
@@ -63,7 +64,7 @@ function EditableDropdown({ value, options, onChange, className, unit }) {
 export default function WorkoutPanel({
   displayedWorkout,
   onUpdateExercise,
-  onDeleteExercise, // 👈 Receive new prop
+  onDeleteExercise,
   onSaveWorkout,
   historyLogs,
   onClearHistory,
@@ -85,7 +86,6 @@ export default function WorkoutPanel({
       <div className="exercise-list-stack">
         {displayedWorkout?.exercises?.map((item, index) => (
           <div key={index} className="exercise-card">
-            {/* 🗑️ NEW: Three Dots Delete Button */}
             <button
               className="delete-exercise-btn"
               onClick={() => onDeleteExercise(index)}
@@ -94,8 +94,20 @@ export default function WorkoutPanel({
               ⋮
             </button>
 
-            <div className="exercise-title-area">
+            {/* 🖼️ LEFT SIDE: Number and Image */}
+            <div className="exercise-visuals">
               <span className="exercise-index">{index + 1}</span>
+              <div className="exercise-thumbnail">
+                <img
+                  src={getExerciseImage(item.name)}
+                  alt={item.name}
+                  loading="lazy"
+                />
+              </div>
+            </div>
+
+            {/* 📝 RIGHT SIDE: Name on Top, Metrics on Bottom */}
+            <div className="exercise-details">
               <input
                 type="text"
                 value={item.name}
@@ -104,45 +116,45 @@ export default function WorkoutPanel({
                 }
                 className="editable-exercise-name-input"
               />
-            </div>
 
-            <div className="exercise-metrics-grid">
-              <div className="metric-box">
-                <label className="metric-label">Sets</label>
-                <EditableDropdown
-                  value={item.sets}
-                  options={["1", "2", "3", "4", "5", "6"]}
-                  onChange={(val) => onUpdateExercise(index, "sets", val)}
-                  className="spec-small"
-                />
-              </div>
+              <div className="exercise-metrics-grid">
+                <div className="metric-box">
+                  <label className="metric-label">Sets</label>
+                  <EditableDropdown
+                    value={item.sets}
+                    options={["1", "2", "3", "4", "5", "6"]}
+                    onChange={(val) => onUpdateExercise(index, "sets", val)}
+                    className="spec-small"
+                  />
+                </div>
 
-              <div className="metric-box">
-                <label className="metric-label">Reps</label>
-                <EditableDropdown
-                  value={item.reps}
-                  options={["5", "8", "10", "12", "15", "20", "AMRAP"]}
-                  onChange={(val) => onUpdateExercise(index, "reps", val)}
-                  className="spec-medium"
-                />
-              </div>
+                <div className="metric-box">
+                  <label className="metric-label">Reps</label>
+                  <EditableDropdown
+                    value={item.reps}
+                    options={["5", "8", "10", "12", "15", "20", "AMRAP"]}
+                    onChange={(val) => onUpdateExercise(index, "reps", val)}
+                    className="spec-medium"
+                  />
+                </div>
 
-              <div className="metric-box">
-                <label className="metric-label">Velocity</label>
-                <EditableDropdown
-                  value={item.velocity}
-                  options={["1.2", "1.1", "1.0", "0.9", "0.8"]}
-                  onChange={(val) => onUpdateExercise(index, "velocity", val)}
-                  className="velocity-field"
-                  unit="m/s"
-                />
-              </div>
+                <div className="metric-box">
+                  <label className="metric-label">Velocity</label>
+                  <EditableDropdown
+                    value={item.velocity}
+                    options={["1.2", "1.1", "1.0", "0.9", "0.8"]}
+                    onChange={(val) => onUpdateExercise(index, "velocity", val)}
+                    className="velocity-field"
+                    unit="m/s"
+                  />
+                </div>
 
-              <div className="metric-box">
-                <label className="metric-label">Est. Time</label>
-                <div className="input-unit-wrapper static-readout-padding">
-                  <span className="calculated-time-text">{item.estTime}</span>
-                  <span className="outside-unit-label text-gray">min</span>
+                <div className="metric-box">
+                  <label className="metric-label">Est. Time</label>
+                  <div className="input-unit-wrapper static-readout-padding">
+                    <span className="calculated-time-text">{item.estTime}</span>
+                    <span className="outside-unit-label text-gray">min</span>
+                  </div>
                 </div>
               </div>
             </div>

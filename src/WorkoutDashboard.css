@@ -9,6 +9,7 @@
     system-ui,
     -apple-system,
     sans-serif;
+  text-align: left; /* Resets text alignment from the global index.css */
 }
 
 .dashboard-content-grid {

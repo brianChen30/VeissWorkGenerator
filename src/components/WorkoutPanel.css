@@ -9,7 +9,7 @@
   gap: 20px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* Keeps the panel from breaking out */
+  overflow: hidden;
 }
 
 .panel-header-row {
@@ -55,27 +55,64 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1; /* Tells the list to take up the remaining vertical space */
-  overflow-y: auto; /* Creates the scrollbar inside the list */
-  padding-right: 8px; /* Gives the scrollbar some breathing room */
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
 }
 
+/* 🚀 SOFTER, MODERN CARD BOUNDARY */
 .exercise-card {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 24px;
   background-color: #ffffff;
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
+  padding: 16px 36px 16px 16px;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6; /* Softened border */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); /* Subtle floating shadow */
   position: relative;
+  transition: border-color 0.2s ease;
 }
 
-.exercise-title-area {
+.exercise-card:hover {
+  border-color: #e5e7eb;
+}
+
+.exercise-visuals {
   display: flex;
   align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.exercise-details {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   flex: 1;
+  min-width: 0;
+}
+
+.delete-exercise-btn {
+  position: absolute;
+  top: 16px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.delete-exercise-btn:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
 }
 
 .exercise-index {
@@ -89,18 +126,38 @@
   justify-content: center;
   font-size: 12px;
   font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* 🖼️ FULL-BLEED IMAGE THUMBNAIL */
+.exercise-thumbnail {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f8fafc;
+  flex-shrink: 0;
+  border: 1px solid #f1f5f9;
+}
+
+.exercise-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fills the container smoothly without letterboxing gaps */
+  display: block;
 }
 
 .editable-exercise-name-input {
   background: transparent;
   border: 1px solid transparent;
   color: #111827;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
-  padding: 4px;
-  width: 85%;
+  padding: 0 4px;
+  width: 100%;
   outline: none;
   border-radius: 4px;
+  text-overflow: ellipsis;
 }
 
 .editable-exercise-name-input:focus {
@@ -111,6 +168,7 @@
 .exercise-metrics-grid {
   display: flex;
   gap: 24px;
+  align-items: flex-end;
 }
 
 .metric-box {
@@ -301,32 +359,4 @@
   font-size: 12px;
   font-weight: 600;
   color: #ffb800;
-}
-
-/* Add to the BOTTOM of src/components/WorkoutPanel.css */
-
-.exercise-card {
-  /* Added padding so the metrics don't bump into the absolute delete button */
-  padding-right: 36px;
-}
-
-.delete-exercise-btn {
-  position: absolute;
-  top: 16px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  color: #9ca3af;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  line-height: 1;
-  transition: all 0.2s;
-}
-
-.delete-exercise-btn:hover {
-  background-color: #fee2e2;
-  color: #ef4444;
 }

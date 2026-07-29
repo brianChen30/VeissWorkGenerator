@@ -7,13 +7,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
   overflow-y: auto;
 }
 
@@ -60,11 +53,6 @@
   font-weight: bold;
 }
 
-.select-wrapper {
-  position: relative;
-  width: 100%;
-}
-
 .modern-select {
   width: 100%;
   background-color: #ffffff;
@@ -84,6 +72,7 @@
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 .modern-select:focus,
@@ -108,6 +97,7 @@
   font-size: 14px;
   font-weight: 500;
   outline: none;
+  box-sizing: border-box;
 }
 
 .input-unit-tag {
@@ -141,7 +131,7 @@
   filter: brightness(1.05);
 }
 
-/* --- BRAND NEW PILL GRID STYLES --- */
+/* --- MULTI-SELECT PILL GRID --- */
 .multi-select-container {
   position: relative;
   width: 100%;
@@ -156,7 +146,7 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  width: 340px; /* Made slightly wider to fit more pills */
+  width: 100%;
   background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -165,6 +155,7 @@
   overflow-y: auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 8px 0 16px 0;
+  box-sizing: border-box;
 }
 
 .multi-select-group-title {
@@ -208,14 +199,12 @@
   border-color: #ffb800;
 }
 
-/* Add to the BOTTOM of src/components/Sidebar.css */
-
 .ai-badge-card {
   background-color: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   padding: 16px;
-  margin-top: auto; /* Automatically pushes this card to the very bottom of the sidebar */
+  margin-top: auto;
 }
 
 .ai-badge-card h4 {

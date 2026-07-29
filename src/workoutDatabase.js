@@ -1,4 +1,5 @@
 // src/workoutDatabase.js
+
 export const secondaryMuscleMap = {
   Chest: "Anterior Deltoids, Triceps",
   Core: "Obliques, Transverse Abdominis",
