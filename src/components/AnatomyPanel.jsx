@@ -4,6 +4,60 @@ import Body from "react-muscle-highlighter";
 import { secondaryMuscleMap } from "../workoutDatabase";
 import "./AnatomyPanel.css";
 
+// 🚀 OPTIMIZATION: Moved outside the component so they are only created once in memory!
+const muscleToSlug = {
+  Chest: ["chest"],
+  Core: ["abs"],
+  Obliques: ["obliques"],
+  Shoulders: ["deltoids"],
+  Biceps: ["biceps"],
+  Forearms: ["forearm"],
+  Hands: ["hands"],
+  Quadriceps: ["quadriceps"],
+  Adductors: ["adductors"],
+  Tibialis: ["tibialis"],
+  Knees: ["knees"],
+  Ankles: ["ankles"],
+  Feet: ["feet"],
+  Head: ["head"],
+  Neck: ["neck"],
+  Trapezius: ["trapezius"],
+  "Upper Back": ["upper-back"],
+  Lats: ["upper-back"],
+  "Lower Back": ["lower-back"],
+  Triceps: ["triceps"],
+  Glutes: ["gluteal"],
+  Hamstrings: ["hamstring"],
+  Calves: ["calves"],
+  Hair: ["hair"],
+};
+
+const slugToMuscle = {
+  abs: "Core",
+  adductors: "Adductors",
+  ankles: "Ankles",
+  biceps: "Biceps",
+  calves: "Calves",
+  chest: "Chest",
+  deltoids: "Shoulders",
+  feet: "Feet",
+  forearm: "Forearms",
+  gluteal: "Glutes",
+  hamstring: "Hamstrings",
+  hands: "Hands",
+  hair: "Hair",
+  head: "Head",
+  knees: "Knees",
+  "lower-back": "Lower Back",
+  neck: "Neck",
+  obliques: "Obliques",
+  quadriceps: "Quadriceps",
+  tibialis: "Tibialis",
+  trapezius: "Trapezius",
+  triceps: "Triceps",
+  "upper-back": "Upper Back",
+};
+
 export default function AnatomyPanel({
   selectedMuscles,
   onBodyPartClick,
@@ -12,59 +66,6 @@ export default function AnatomyPanel({
   onMuscleHover,
 }) {
   const [viewSide, setViewSide] = useState("front");
-
-  const muscleToSlug = {
-    Chest: ["chest"],
-    Core: ["abs"],
-    Obliques: ["obliques"],
-    Shoulders: ["deltoids"],
-    Biceps: ["biceps"],
-    Forearms: ["forearm"],
-    Hands: ["hands"],
-    Quadriceps: ["quadriceps"],
-    Adductors: ["adductors"],
-    Tibialis: ["tibialis"],
-    Knees: ["knees"],
-    Ankles: ["ankles"],
-    Feet: ["feet"],
-    Head: ["head"],
-    Neck: ["neck"],
-    Trapezius: ["trapezius"],
-    "Upper Back": ["upper-back"],
-    Lats: ["upper-back"],
-    "Lower Back": ["lower-back"],
-    Triceps: ["triceps"],
-    Glutes: ["gluteal"],
-    Hamstrings: ["hamstring"],
-    Calves: ["calves"],
-    Hair: ["hair"],
-  };
-
-  const slugToMuscle = {
-    abs: "Core",
-    adductors: "Adductors",
-    ankles: "Ankles",
-    biceps: "Biceps",
-    calves: "Calves",
-    chest: "Chest",
-    deltoids: "Shoulders",
-    feet: "Feet",
-    forearm: "Forearms",
-    gluteal: "Glutes",
-    hamstring: "Hamstrings",
-    hands: "Hands",
-    hair: "Hair",
-    head: "Head",
-    knees: "Knees",
-    "lower-back": "Lower Back",
-    neck: "Neck",
-    obliques: "Obliques",
-    quadriceps: "Quadriceps",
-    tibialis: "Tibialis",
-    trapezius: "Trapezius",
-    triceps: "Triceps",
-    "upper-back": "Upper Back",
-  };
 
   const handleComponentClick = (part) => {
     if (!part?.slug) return;
