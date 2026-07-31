@@ -231,7 +231,10 @@ const exerciseFolders = {
   hamstrings: [
     "Romanian Deadlifts",
     "Leg Curls",
+    "Glute-Ham Raises",
+    "Good Mornings",
     "Stiff-Legged Deadlifts",
+    "Kettlebell Swings",
     "Nordic Hamstring Curls",
     "Single-Leg RDLs",
     "Lying Leg Curls",
