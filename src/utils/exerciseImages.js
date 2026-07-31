@@ -160,6 +160,9 @@ const exerciseFolders = {
   trapezius: [
     "Barbell Shrugs",
     "Dumbbell Shrugs",
+    "Upright Rows",
+    "Face Pulls",
+    "Farmer's Walk",
     "Snatch-Grip High Pulls",
     "Overhead Squats",
     "Power Cleans",
