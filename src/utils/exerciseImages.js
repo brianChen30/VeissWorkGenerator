@@ -220,8 +220,13 @@ const exerciseFolders = {
     "Hip Thrusts",
     "Glute Bridges",
     "Cable Kickbacks",
+    "Bulgarian Split Squats",
     "Walking Lunges",
+    "Sumo Squats",
+    "Step-Ups",
+    "Kettlebell Swings",
     "Clamshells",
+    "Reverse Hyperextensions",
   ],
   hamstrings: [
     "Romanian Deadlifts",
