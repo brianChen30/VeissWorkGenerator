@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
 });
 
-// 📁 COMPACT FOLDER MAPPING (Same strict database as before!)
+// 📁 COMPACT FOLDER MAPPING
 const exerciseFolders = {
   Head: [
     "Chin Tucks",
@@ -309,10 +309,10 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      // The model has been updated to the latest, active 2026 version
+      model: "gemini-3.6-flash",
       contents: prompt,
       config: {
-        // This strictly forces Gemini to return a clean JSON object without Markdown formatting!
         responseMimeType: "application/json",
       },
     });
