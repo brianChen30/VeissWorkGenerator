@@ -1,7 +1,8 @@
 // src/hooks/useWorkoutData.js
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-import { generateSmartWorkoutAI } from "../utils/aiGenerator";
+// import { generateSmartWorkoutAI } from "../utils/aiGenerator";
+import { generateSmartWorkoutAI } from "../utils/geminiGenerator";
 import { calculateExerciseTime } from "../utils/workoutGenerator";
 
 export function useWorkoutData() {
