@@ -1,13 +1,19 @@
 // src/utils/aiGenerator.js
+import { GoogleGenAI } from "@google/genai";
 import Groq from "groq-sdk";
+import { calculateWorkoutTime } from "./workoutTimeCalculator";
+
+// Initialize both AI Clients
+const ai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+});
 
 const groq = new Groq({
   apiKey: import.meta.env.VITE_GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
-// 🔒 THE COMPLETE VAULT: Every muscle group from the UI is now mapped!
-const exerciseDatabase = {
+const exerciseFolders = {
   Head: [
     "Chin Tucks",
     "Head Nods",
@@ -265,16 +271,16 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
 
   let allowedExercises = [];
   musclesArray.forEach((muscle) => {
-    const foundKey = Object.keys(exerciseDatabase).find(
+    const foundKey = Object.keys(exerciseFolders).find(
       (k) => k.toLowerCase() === muscle.toLowerCase(),
     );
     if (foundKey) {
-      allowedExercises = allowedExercises.concat(exerciseDatabase[foundKey]);
+      allowedExercises = allowedExercises.concat(exerciseFolders[foundKey]);
     }
   });
 
   if (allowedExercises.length === 0) {
-    allowedExercises = Object.values(exerciseDatabase).flat();
+    allowedExercises = Object.values(exerciseFolders).flat();
   }
 
   let targetExerciseCount = Math.ceil(timeLimit / 15);
@@ -289,34 +295,67 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
     Design a workout targeting: ${primaryLabel}.
     
     Rules:
-    1. Only output raw JSON matching the exact schema below. No markdown, no conversational text.
-    2. You MUST generate EXACTLY ${targetExerciseCount} exercises in the "exercises" array.
-    3. STRICT UNIQUENESS: Every single exercise must be DISTINCT. DO NOT REPEAT any exercise.
-    4. FATAL ERROR PRECAUTION: You are strictly limited to ONLY these exact exercise names:
+    1. Generate EXACTLY ${targetExerciseCount} exercises.
+    2. Every exercise must be unique. DO NOT REPEAT any exercise.
+    3. FATAL ERROR PRECAUTION: You are strictly limited to ONLY these exact exercise names:
        [ ${allowedString} ]
-    5. NEVER invent, modify, or combine exercise names. Use exactly what is in the list above.
+    4. NEVER invent, modify, or combine exercise names.
     
-    JSON Schema:
+    JSON Schema Requirement:
+    Return ONLY a valid JSON object matching this exact structure:
     {
       "primary": "${primaryLabel}",
       "secondary": "List 3-5 secondary muscles engaged",
       "totalTime": ${timeLimit},
       "exercises": [
-        { "name": "Exact Name From Allowed List", "sets": "4", "reps": "8", "velocity": "1.0", "estTime": 15 }
+        { "name": "Exact Name From Allowed List", "sets": "4", "reps": "8", "velocity": "1.0" }
       ]
     }
   `;
 
+  // --- ATTEMPT 1: GOOGLE GEMINI ---
   try {
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: "llama-3.1-8b-instant",
-      response_format: { type: "json_object" },
+    const response = await ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
     });
 
-    return JSON.parse(chatCompletion.choices[0].message.content);
+    const rawWorkout = JSON.parse(response.text);
+    return calculateWorkoutTime(rawWorkout, timeLimit);
   } catch (error) {
-    console.error("AI Error:", error);
-    throw new Error("Failed to generate workout.");
+    console.warn("Gemini Error Caught:", error);
+
+    // Check if the error is a rate limit/quota hit
+    const isRateLimit =
+      error.status === 429 ||
+      (error.message && error.message.includes("429")) ||
+      (error.message && error.message.includes("quota"));
+
+    if (isRateLimit) {
+      console.log("Gemini usage limit reached. Falling back to Groq LLaMA...");
+
+      // --- ATTEMPT 2: GROQ FALLBACK ---
+      try {
+        const chatCompletion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.1-8b-instant",
+          response_format: { type: "json_object" },
+        });
+
+        const rawWorkout = JSON.parse(
+          chatCompletion.choices[0].message.content,
+        );
+        return calculateWorkoutTime(rawWorkout, timeLimit);
+      } catch (groqError) {
+        console.error("Groq Fallback Error:", groqError);
+        throw new Error("Both AI providers failed to generate the workout.");
+      }
+    } else {
+      // If Gemini fails for a reason OTHER than rate limits (like network failure), throw it.
+      throw new Error("Failed to generate workout with Gemini.");
+    }
   }
 }

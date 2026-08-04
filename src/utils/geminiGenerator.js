@@ -1,12 +1,11 @@
 // src/utils/geminiGenerator.js
 import { GoogleGenAI } from "@google/genai";
+import { calculateWorkoutTime } from "./workoutTimeCalculator";
 
-// Initialize Gemini using your Vite environment variable
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY,
 });
 
-// 📁 COMPACT FOLDER MAPPING
 const exerciseFolders = {
   Head: [
     "Chin Tucks",
@@ -289,11 +288,11 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
     Design a workout targeting: ${primaryLabel}.
     
     Rules:
-    1. You MUST generate EXACTLY ${targetExerciseCount} exercises in the "exercises" array.
-    2. STRICT UNIQUENESS: Every single exercise must be DISTINCT. DO NOT REPEAT any exercise.
+    1. Generate EXACTLY ${targetExerciseCount} exercises.
+    2. Every exercise must be unique. DO NOT REPEAT any exercise.
     3. FATAL ERROR PRECAUTION: You are strictly limited to ONLY these exact exercise names:
        [ ${allowedString} ]
-    4. NEVER invent, modify, or combine exercise names. Use exactly what is in the list above.
+    4. NEVER invent, modify, or combine exercise names.
     
     JSON Schema Requirement:
     Return ONLY a valid JSON object matching this exact structure:
@@ -302,14 +301,13 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
       "secondary": "List 3-5 secondary muscles engaged",
       "totalTime": ${timeLimit},
       "exercises": [
-        { "name": "Exact Name From Allowed List", "sets": "4", "reps": "8", "velocity": "1.0", "estTime": 15 }
+        { "name": "Exact Name From Allowed List", "sets": "4", "reps": "8", "velocity": "1.0" }
       ]
     }
   `;
 
   try {
     const response = await ai.models.generateContent({
-      // The model has been updated to the latest, active 2026 version
       model: "gemini-3.6-flash",
       contents: prompt,
       config: {
@@ -317,9 +315,23 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
       },
     });
 
-    return JSON.parse(response.text);
+    const rawWorkout = JSON.parse(response.text);
+    return calculateWorkoutTime(rawWorkout, timeLimit);
   } catch (error) {
     console.error("Gemini AI Error:", error);
+
+    // 🛑 NEW: Intercept 429 Rate Limit Errors
+    if (
+      error.status === 429 ||
+      (error.message && error.message.includes("429")) ||
+      (error.message && error.message.includes("quota"))
+    ) {
+      throw new Error(
+        "You are generating workouts too fast! Please wait 60 seconds for the AI to cool down.",
+      );
+    }
+
+    // Fallback for all other errors
     throw new Error("Failed to generate workout with Gemini.");
   }
 }
