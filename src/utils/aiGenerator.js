@@ -166,7 +166,7 @@ const exerciseFolders = {
     "Vigorous Towel Drying",
     "Post-Workout Brushing",
     "Sweaty Hair Flips",
-  ], // Fallback safe exercises
+  ],
   Trapezius: [
     "Barbell Shrugs",
     "Dumbbell Shrugs",
@@ -326,39 +326,25 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
     const rawWorkout = JSON.parse(response.text);
     return calculateWorkoutTime(rawWorkout, timeLimit);
   } catch (error) {
-    console.warn("Gemini Error Caught:", error);
+    console.warn(
+      "Gemini Error Caught (Switching to Groq LLaMA fallback...):",
+      error,
+    );
 
-    // Check if the error is a rate limit/quota hit
-    const isRateLimit =
-      error.status === 429 ||
-      (error.message && error.message.includes("429")) ||
-      (error.message && error.message.includes("quota"));
+    // --- ATTEMPT 2: GROQ FALLBACK (Triggered on ANY Gemini failure) ---
+    try {
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "llama-3.1-8b-instant",
+        response_format: { type: "json_object" },
+      });
 
-    if (isRateLimit) {
-      console.log("Gemini usage limit reached. Falling back to Groq LLaMA...");
-
-      // --- ATTEMPT 2: GROQ FALLBACK ---
-      try {
-        const chatCompletion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.1-8b-instant",
-          response_format: { type: "json_object" },
-        });
-
-        const rawWorkout = JSON.parse(
-          chatCompletion.choices[0].message.content,
-        );
-        return calculateWorkoutTime(rawWorkout, timeLimit);
-      } catch (groqError) {
-        console.error("Groq Fallback Error:", groqError);
-        throw new Error("Both AI providers failed to generate the workout.", {
-          cause: groqError,
-        });
-      }
-    } else {
-      // If Gemini fails for a reason OTHER than rate limits (like network failure), throw it.
-      throw new Error("Failed to generate workout with Gemini.", {
-        cause: error,
+      const rawWorkout = JSON.parse(chatCompletion.choices[0].message.content);
+      return calculateWorkoutTime(rawWorkout, timeLimit);
+    } catch (groqError) {
+      console.error("Groq Fallback Error:", groqError);
+      throw new Error("Both AI providers failed to generate the workout.", {
+        cause: groqError,
       });
     }
   }

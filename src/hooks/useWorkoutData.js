@@ -1,9 +1,8 @@
 // src/hooks/useWorkoutData.js
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-// import { generateSmartWorkoutAI } from "../utils/aiGenerator";
-import { generateSmartWorkoutAI } from "../utils/geminiGenerator";
-import { calculateExerciseTime } from "../utils/workoutGenerator";
+import { generateSmartWorkoutAI } from "../utils/aiGenerator";
+import { calculateWorkoutTime } from "../utils/workoutTimeCalculator";
 
 export function useWorkoutData() {
   const [selectedMuscles, setSelectedMuscles] = useState([]);
@@ -101,28 +100,28 @@ export function useWorkoutData() {
     setDisplayedWorkout((prevWorkout) => {
       if (!prevWorkout || prevWorkout.exercises.length === 0)
         return prevWorkout;
+
+      // 1. Copy the exercises array and update the specific dropdown value
       const updatedExercises = [...prevWorkout.exercises];
       updatedExercises[index] = {
         ...updatedExercises[index],
         [field]: newValue,
       };
 
-      updatedExercises[index].estTime = calculateExerciseTime(
-        updatedExercises[index].sets,
-        updatedExercises[index].reps,
-        updatedExercises[index].velocity,
-      );
-
-      const freshTotalMinutes = updatedExercises.reduce(
-        (sum, item) => sum + item.estTime,
-        0,
-      );
-      setWorkoutTime(freshTotalMinutes);
-      return {
+      // 2. Build the updated workout object
+      const updatedWorkout = {
         ...prevWorkout,
         exercises: updatedExercises,
-        totalTime: freshTotalMinutes,
       };
+
+      // 3. Run the ENTIRE workout through the proportional calculator
+      // This perfectly redistributes the minutes across all cards!
+      const perfectlyTimedWorkout = calculateWorkoutTime(
+        updatedWorkout,
+        prevWorkout.totalTime,
+      );
+
+      return perfectlyTimedWorkout;
     });
   };
 
