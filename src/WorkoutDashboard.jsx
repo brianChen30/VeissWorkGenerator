@@ -1,5 +1,4 @@
 // src/WorkoutDashboard.jsx
-import React from "react";
 import Sidebar from "./components/Sidebar";
 import AnatomyPanel from "./components/AnatomyPanel";
 import WorkoutPanel from "./components/WorkoutPanel";

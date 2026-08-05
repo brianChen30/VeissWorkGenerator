@@ -2,9 +2,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { calculateWorkoutTime } from "./workoutTimeCalculator";
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-});
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 const exerciseFolders = {
   Head: [
@@ -258,6 +257,33 @@ const exerciseFolders = {
   ],
 };
 
+function buildFallbackWorkout(musclesArray, timeLimit, allowedExercises) {
+  const primaryLabel = musclesArray.join(", ");
+  const targetExerciseCount = Math.min(
+    Math.max(1, Math.ceil(timeLimit / 15)),
+    allowedExercises.length,
+  );
+
+  const exercises = allowedExercises
+    .slice(0, targetExerciseCount)
+    .map((name) => ({
+      name,
+      sets: "3",
+      reps: "10",
+      velocity: "1.0",
+    }));
+
+  return calculateWorkoutTime(
+    {
+      primary: primaryLabel,
+      secondary: "General conditioning",
+      totalTime: timeLimit,
+      exercises,
+    },
+    timeLimit,
+  );
+}
+
 export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
   if (!musclesArray || musclesArray.length === 0) return null;
   const primaryLabel = musclesArray.join(", ");
@@ -282,6 +308,13 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
   }
 
   const allowedString = allowedExercises.map((ex) => `"${ex}"`).join(", ");
+
+  if (!ai) {
+    console.warn(
+      "VITE_GEMINI_API_KEY is not configured. Using fallback workout generator.",
+    );
+    return buildFallbackWorkout(musclesArray, timeLimit, allowedExercises);
+  }
 
   const prompt = `
     You are an elite sports scientist programming for an athlete. 
@@ -328,10 +361,13 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
     ) {
       throw new Error(
         "You are generating workouts too fast! Please wait 60 seconds for the AI to cool down.",
+        { cause: error },
       );
     }
 
     // Fallback for all other errors
-    throw new Error("Failed to generate workout with Gemini.");
+    throw new Error("Failed to generate workout with Gemini.", {
+      cause: error,
+    });
   }
 }

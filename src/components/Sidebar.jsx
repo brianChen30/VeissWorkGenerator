@@ -1,5 +1,5 @@
 // src/components/Sidebar.jsx
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Sidebar.css";
 
 const anteriorOptions = [

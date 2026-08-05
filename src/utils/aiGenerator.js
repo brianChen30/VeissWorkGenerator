@@ -351,11 +351,15 @@ export async function generateSmartWorkoutAI(musclesArray, timeLimit) {
         return calculateWorkoutTime(rawWorkout, timeLimit);
       } catch (groqError) {
         console.error("Groq Fallback Error:", groqError);
-        throw new Error("Both AI providers failed to generate the workout.");
+        throw new Error("Both AI providers failed to generate the workout.", {
+          cause: groqError,
+        });
       }
     } else {
       // If Gemini fails for a reason OTHER than rate limits (like network failure), throw it.
-      throw new Error("Failed to generate workout with Gemini.");
+      throw new Error("Failed to generate workout with Gemini.", {
+        cause: error,
+      });
     }
   }
 }

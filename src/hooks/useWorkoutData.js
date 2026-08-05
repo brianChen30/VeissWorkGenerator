@@ -22,10 +22,21 @@ export function useWorkoutData() {
 
   useEffect(() => {
     async function fetchLogs() {
+      if (!supabase) {
+        console.warn("Supabase is not configured; skipping history load.");
+        return;
+      }
+
       const { data, error } = await supabase
         .from("workout_history")
         .select("*")
         .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Failed to fetch workout history", error);
+        return;
+      }
+
       if (data) {
         setSavedHistory(
           data.map((row) => {
@@ -79,6 +90,7 @@ export function useWorkoutData() {
         setDisplayedWorkout(aiWorkout);
       }
     } catch (error) {
+      console.error("Workout generation failed", error);
       alert("Failed to reach AI. Please try again.");
     } finally {
       setIsGenerating(false);
@@ -143,6 +155,11 @@ export function useWorkoutData() {
       return;
     }
 
+    if (!supabase) {
+      alert("Cloud history is unavailable because Supabase is not configured.");
+      return;
+    }
+
     const { data, error } = await supabase
       .from("workout_history")
       .insert([
@@ -179,6 +196,13 @@ export function useWorkoutData() {
     if (
       window.confirm("Are you sure you want to clear all cloud history logs?")
     ) {
+      if (!supabase) {
+        alert(
+          "Cloud history is unavailable because Supabase is not configured.",
+        );
+        return;
+      }
+
       await supabase.from("workout_history").delete().neq("id", 0);
       setSavedHistory([]);
     }

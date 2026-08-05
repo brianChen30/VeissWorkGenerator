@@ -1,5 +1,5 @@
 // src/components/WorkoutPanel.jsx
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getExerciseImage } from "../utils/exerciseImages";
 import "./WorkoutPanel.css";
 

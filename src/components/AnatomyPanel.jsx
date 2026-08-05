@@ -1,5 +1,5 @@
 // src/components/AnatomyPanel.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import Body from "react-muscle-highlighter";
 import { secondaryMuscleMap } from "../workoutDatabase";
 import "./AnatomyPanel.css";
@@ -61,7 +61,6 @@ const slugToMuscle = {
 export default function AnatomyPanel({
   selectedMuscles,
   onBodyPartClick,
-  displayedWorkout,
   hoveredMuscle,
   onMuscleHover,
 }) {
